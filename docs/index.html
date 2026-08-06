@@ -63,7 +63,15 @@ const copy=[
 ];let i=0;const g=document.querySelector('#greeting'),h=document.querySelector('#hint'),d=document.querySelector('#dialogue'),l=document.querySelector('#listening');
 function show(){g.textContent=copy[i][0];h.textContent=copy[i][1]}function next(){i=(i+1)%copy.length;show();d.classList.add('listening');l.textContent='俺老孙听着呢 ···';setTimeout(()=>{d.classList.remove('listening');l.textContent=''},1300)}
 show();setTimeout(()=>document.querySelector('#character').classList.add('ready'),300);setInterval(next,4800);
-document.querySelector('#next').onclick=e=>{e.stopPropagation();next()};document.querySelector('#start').onclick=e=>{e.stopPropagation();alert('俺老孙等你开讲。\n下一步将进入故事创作流程。')};
+document.querySelector('#next').onclick=e=>{e.stopPropagation();next()};
+const flow=document.querySelector('#flow'),steps=[...document.querySelectorAll('.step')],labels=['STEP 01 · 素材','STEP 02 · 类型','STEP 03 · 故事核','STEP 04 · 海报','STEP 05 · VLOG','完成'];let step=0;
+function flowShow(n){step=Math.max(0,Math.min(n,steps.length-1));steps.forEach((x,j)=>x.classList.toggle('active',j===step));document.querySelector('#stepLabel').textContent=labels[step];flow.scrollTop=0}
+document.querySelector('#start').onclick=e=>{e.stopPropagation();flow.classList.add('open');flowShow(0)};
+document.querySelectorAll('.flow-next').forEach(x=>x.onclick=()=>{if(step===0){document.querySelector('#posterStory').textContent=document.querySelector('#storyInput').value||'一颗桃的故事'}flowShow(step+1)});
+document.querySelector('#flowBack').onclick=()=>{if(step===0)flow.classList.remove('open');else flowShow(step-1)};
+document.querySelector('#upload').onclick=function(){this.classList.add('done');this.innerHTML='<div><b>✓</b><span>已选择测试照片</span></div>'};
+document.querySelectorAll('.option').forEach(x=>x.onclick=()=>{document.querySelectorAll('.option').forEach(y=>y.classList.remove('selected'));x.classList.add('selected')});
+document.querySelector('#again').onclick=()=>flowShow(0);document.querySelector('#homeAgain').onclick=()=>flow.classList.remove('open');
 document.querySelector('#home').onclick=e=>{const r=document.createElement('i');r.className='ripple';r.style.left=e.clientX+'px';r.style.top=e.clientY+'px';document.querySelector('#home').appendChild(r);d.classList.add('listening');l.textContent='俺老孙听着呢 ···';setTimeout(()=>r.remove(),1500);setTimeout(()=>{d.classList.remove('listening');l.textContent=''},1300)};
 </script>
 </body></html>
