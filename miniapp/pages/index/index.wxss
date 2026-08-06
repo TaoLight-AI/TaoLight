@@ -1,0 +1,54 @@
+page { height: 100%; overflow: hidden; }
+.home {
+  position: relative; min-height: 100vh; overflow: hidden;
+  padding: calc(env(safe-area-inset-top) + 34rpx) 48rpx 46rpx;
+  background: linear-gradient(180deg, #f7d9cc 0%, #f5e7d6 35%, #d9ddc7 72%, #b9c3a7 100%);
+  box-sizing: border-box;
+}
+.home::before,.home::after { content:"";position:absolute;bottom:-8%;border-radius:50% 50% 0 0;background:rgba(91,113,78,.34);filter:blur(2rpx) }
+.home::before { left:-30%;width:108%;height:32%;transform:rotate(5deg) }
+.home::after { right:-38%;width:112%;height:27%;background:rgba(70,94,64,.28);transform:rotate(-6deg) }
+.morning-glow { position:absolute;top:-150rpx;right:-120rpx;width:520rpx;height:520rpx;border-radius:50%;background:radial-gradient(circle,rgba(255,249,211,.94),rgba(255,229,196,.25) 55%,transparent 72%);animation:breathe 5s ease-in-out infinite }
+.mist { position:absolute;width:620rpx;height:130rpx;border-radius:50%;background:rgba(255,255,255,.22);filter:blur(24rpx);animation:drift 11s ease-in-out infinite alternate }
+.mist-a { top:31%;left:-260rpx }.mist-b { top:49%;right:-300rpx;animation-delay:-4s }
+.brand { position:relative;z-index:5;display:flex;align-items:center;gap:16rpx;color:#624940 }
+.brand-mark { width:58rpx;height:58rpx;display:grid;place-items:center;border:2rpx solid rgba(126,68,65,.55);border-radius:18rpx;color:#8f4f52;font-family:serif;font-size:32rpx;transform:rotate(-3deg) }
+.brand-cn,.brand-en { display:block }.brand-cn { font:600 27rpx/1.2 serif;letter-spacing:5rpx }.brand-en { margin-top:5rpx;font-size:14rpx;letter-spacing:4rpx;opacity:.62 }
+.hero { position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;padding-top:18rpx;text-align:center }
+.character-wrap { position:relative;width:320rpx;height:330rpx;opacity:0;transform:translateY(34rpx) scale(.92);transition:opacity 1s ease,transform 1.2s cubic-bezier(.2,.8,.2,1) }
+.character-wrap.is-ready { opacity:1;transform:translateY(0) scale(1) }
+.halo { position:absolute;inset:18rpx 25rpx 5rpx;border-radius:50%;background:radial-gradient(circle,rgba(255,245,211,.8),rgba(255,233,211,.18) 58%,transparent 72%);animation:breathe 4.5s ease-in-out infinite }
+.character { position:absolute;left:50%;bottom:8rpx;width:225rpx;height:275rpx;transform:translateX(-50%);animation:float 5.4s ease-in-out infinite }
+.character-face { position:absolute;z-index:5;top:8rpx;left:48rpx;width:132rpx;height:128rpx;border-radius:48% 48% 44% 44%;background:linear-gradient(145deg,#9a7258,#6f5142);box-shadow:inset 0 0 0 13rpx rgba(244,199,157,.24),0 18rpx 32rpx rgba(76,52,41,.17) }
+.character-ear { position:absolute;z-index:3;top:50rpx;width:46rpx;height:58rpx;border-radius:50%;background:#7d5b48 }.character-ear.left{left:27rpx}.character-ear.right{right:28rpx}
+.brow { position:absolute;top:43rpx;width:25rpx;height:6rpx;border-radius:10rpx;background:#4c382e }.brow.left{left:30rpx;transform:rotate(5deg)}.brow.right{right:30rpx;transform:rotate(-5deg)}
+.eye { position:absolute;top:58rpx;width:8rpx;height:10rpx;border-radius:50%;background:#382b25 }.eye.left{left:39rpx}.eye.right{right:39rpx}
+.smile { position:absolute;left:50%;top:79rpx;width:34rpx;height:17rpx;border-bottom:5rpx solid #4d352e;border-radius:50%;transform:translateX(-50%) rotate(-4deg) }
+.character-body { position:absolute;z-index:3;left:24rpx;bottom:4rpx;width:177rpx;height:157rpx;border-radius:74rpx 74rpx 35rpx 35rpx;background:linear-gradient(145deg,#a98668,#81624e);box-shadow:0 20rpx 30rpx rgba(69,49,38,.18) }
+.linen-collar { position:absolute;top:16rpx;left:55rpx;width:65rpx;height:30rpx;border-left:5rpx solid #ead8be;border-right:5rpx solid #ead8be;border-radius:0 0 25rpx 25rpx;opacity:.75 }
+.soft-belly { position:absolute;left:39rpx;bottom:14rpx;width:100rpx;height:82rpx;border-radius:50%;background:rgba(225,190,150,.17);box-shadow:inset 0 -5rpx 10rpx rgba(76,52,41,.09) }
+.peach-cape { position:absolute;z-index:2;left:8rpx;right:8rpx;bottom:0;height:139rpx;border-radius:90rpx 90rpx 25rpx 25rpx;background:linear-gradient(135deg,#c66d7f,#9b5265);box-shadow:0 15rpx 28rpx rgba(128,67,80,.18);transform:rotate(-2deg) }
+.arm { position:absolute;z-index:6;width:92rpx;height:30rpx;border-radius:30rpx;background:#866550;transform-origin:10rpx 15rpx }.peach-arm{left:-8rpx;top:153rpx;transform:rotate(-28deg)}.selfie-arm{right:-10rpx;top:157rpx;transform:rotate(30deg)}
+.hand { position:absolute;right:-3rpx;top:-2rpx;width:34rpx;height:34rpx;border-radius:50%;background:#9a755d }
+.peach { position:absolute;right:-23rpx;top:-34rpx;width:52rpx;height:49rpx;border-radius:50% 50% 46% 46%;background:linear-gradient(135deg,#efb18f,#d97d8e);box-shadow:inset -6rpx -7rpx 10rpx rgba(158,73,80,.16) }
+.peach::after { content:"";position:absolute;left:25rpx;top:-8rpx;width:3rpx;height:12rpx;background:#765b43;transform:rotate(9deg) }
+.peach-leaf { position:absolute;left:28rpx;top:-8rpx;width:18rpx;height:9rpx;border-radius:100% 0 100% 0;background:#738469;transform:rotate(-20deg) }
+.selfie-stick { position:absolute;z-index:7;right:-65rpx;top:12rpx;width:105rpx;height:210rpx;transform:rotate(18deg);transform-origin:bottom center }
+.phone { position:absolute;right:0;top:0;width:58rpx;height:91rpx;border:5rpx solid #69564e;border-radius:13rpx;background:#f2e8d9;box-shadow:0 8rpx 15rpx rgba(67,48,41,.15) }
+.phone-lens { position:absolute;right:7rpx;top:7rpx;width:9rpx;height:9rpx;border-radius:50%;background:#78645b }
+.stick-line { position:absolute;right:29rpx;top:86rpx;width:5rpx;height:104rpx;background:linear-gradient(#75655d,#4f4945) }
+.grip { position:absolute;right:20rpx;bottom:0;width:22rpx;height:36rpx;border-radius:8rpx;background:#8a5e4b }
+.welcome-wave { position:absolute;right:-4rpx;top:48rpx;padding:8rpx 15rpx;border-radius:20rpx 20rpx 20rpx 5rpx;background:rgba(255,250,239,.92);color:#965466;font:600 22rpx serif;animation:wave 3s ease-in-out infinite }
+.identity { margin-top:-10rpx }.kicker { display:block;color:#8f5b53;font-size:19rpx;letter-spacing:4rpx }.title { display:block;margin-top:8rpx;color:#493a33;font:600 52rpx/1.25 serif;letter-spacing:5rpx }.brand-promise { display:block;margin-top:9rpx;color:rgba(83,62,51,.72);font:500 23rpx/1.6 serif;letter-spacing:2rpx }
+.dialogue { width:100%;min-height:142rpx;margin-top:23rpx;padding:22rpx 28rpx;border:1rpx solid rgba(255,255,255,.58);border-radius:32rpx 32rpx 32rpx 10rpx;background:rgba(255,251,243,.72);box-shadow:0 18rpx 50rpx rgba(94,70,55,.1);backdrop-filter:blur(16rpx);text-align:left;box-sizing:border-box;transition:transform .4s ease,background .4s ease }
+.dialogue.is-listening { transform:translateY(-5rpx);background:rgba(255,248,238,.92) }
+.dialogue-dot { float:left;width:10rpx;height:10rpx;margin:16rpx 16rpx 0 0;border-radius:50%;background:#c77486;box-shadow:0 0 0 8rpx rgba(199,116,134,.13) }
+.greeting { display:block;color:#59443b;font:600 27rpx/1.55 serif;animation:copyIn .7s ease }.hint { display:block;padding-left:26rpx;color:#79675d;font-size:22rpx;line-height:1.7 }.listening { display:block;padding:6rpx 0 0 26rpx;color:#a15a68;font-size:20rpx }
+.actions { position:absolute;z-index:8;left:48rpx;right:48rpx;bottom:calc(env(safe-area-inset-bottom) + 68rpx) }
+.primary,.quiet { width:100%;border:0 }.primary { height:96rpx;display:flex;align-items:center;justify-content:center;gap:24rpx;border-radius:32rpx;background:linear-gradient(135deg,#bd6679,#d38291);color:#fffaf4;font-size:28rpx;font-weight:600;letter-spacing:2rpx;box-shadow:0 20rpx 38rpx rgba(140,73,88,.2) }
+.arrow { font-size:38rpx;font-weight:300 }.quiet { margin-top:10rpx;background:transparent;color:rgba(67,57,49,.64);font-size:21rpx }
+.relax-tip { position:absolute;z-index:4;bottom:34rpx;left:0;right:0;text-align:center;color:rgba(70,65,55,.47);font-size:18rpx;letter-spacing:2rpx }
+.leaf { position:absolute;z-index:2;color:rgba(94,120,76,.42);font-size:65rpx;animation:leaf 7s ease-in-out infinite }.leaf-a{left:2%;top:22%;transform:rotate(15deg)}.leaf-b{right:5%;top:38%;animation-delay:-2s}.leaf-c{left:10%;top:56%;animation-delay:-5s;font-size:45rpx}
+.ripple { position:absolute;z-index:2;width:24rpx;height:24rpx;margin:-12rpx;border:2rpx solid rgba(255,255,255,.75);border-radius:50%;animation:ripple 1.5s ease-out forwards;pointer-events:none }
+@keyframes breathe{50%{transform:scale(1.06);opacity:.78}}@keyframes float{50%{transform:translateX(-50%) translateY(-8rpx) rotate(.6deg)}}@keyframes drift{to{transform:translateX(170rpx)}}@keyframes wave{50%{transform:translateY(-7rpx) rotate(2deg)}}@keyframes leaf{50%{transform:translate(14rpx,-18rpx) rotate(9deg);opacity:.7}}@keyframes copyIn{from{opacity:0;transform:translateY(8rpx)}}@keyframes ripple{to{width:240rpx;height:240rpx;margin:-120rpx;opacity:0}}
+@media (prefers-reduced-motion: reduce) { .morning-glow,.mist,.character,.welcome-wave,.leaf { animation:none }.character-wrap { opacity:1;transform:none } }

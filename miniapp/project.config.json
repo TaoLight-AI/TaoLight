@@ -1,0 +1,13 @@
+{
+  "description": "桃紫有光 · 大圣故事工坊",
+  "compileType": "miniprogram",
+  "miniprogramRoot": "./",
+  "setting": {
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true
+  },
+  "appid": "touristappid",
+  "projectname": "TaoLight"
+}
