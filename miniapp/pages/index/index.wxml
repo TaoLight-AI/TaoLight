@@ -1,0 +1,55 @@
+<view class="home" bindtap="handleSceneTap">
+  <view class="morning-glow"></view>
+  <view class="mist mist-a"></view>
+  <view class="mist mist-b"></view>
+
+  <view class="brand">
+    <view class="brand-mark">桃</view>
+    <view>
+      <text class="brand-cn">桃紫有光</text>
+      <text class="brand-en">TAOLIGHT AI</text>
+    </view>
+  </view>
+
+  <view class="leaf leaf-a">𖧧</view>
+  <view class="leaf leaf-b">𖧧</view>
+  <view class="leaf leaf-c">𖧧</view>
+
+  <view class="hero">
+    <view class="character-wrap {{welcomed ? 'is-ready' : ''}}">
+      <view class="halo"></view>
+      <view class="character">
+        <view class="character-ear left"></view>
+        <view class="character-ear right"></view>
+        <view class="character-face">
+          <text class="character-seal">圣</text>
+        </view>
+        <view class="peach-cape"></view>
+      </view>
+      <view class="welcome-wave">嗨</view>
+    </view>
+
+    <view class="identity">
+      <text class="kicker">退休大圣的故事会客厅</text>
+      <text class="title">大圣故事工坊</text>
+      <text class="descriptor">上传一张照片 · 说一句故事 · 让平凡日子有光</text>
+    </view>
+
+    <view class="dialogue {{listening ? 'is-listening' : ''}}">
+      <view class="dialogue-dot"></view>
+      <text class="greeting" key="{{copyIndex}}">{{greeting}}</text>
+      <text class="hint">{{hint}}</text>
+      <text wx:if="{{listening}}" class="listening">俺老孙听着呢 ···</text>
+    </view>
+  </view>
+
+  <view class="actions" catchtap="noop">
+    <button class="primary" bindtap="startStory">
+      <text>开始讲故事</text><text class="arrow">→</text>
+    </button>
+    <button class="quiet" bindtap="openInspiration">先在桃园里坐一会儿</button>
+  </view>
+
+  <view class="relax-tip">轻点桃园，听大圣回应</view>
+  <view wx:if="{{listening}}" class="ripple" style="left:{{rippleX}}%;top:{{rippleY}}%"></view>
+</view>
