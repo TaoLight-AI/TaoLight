@@ -19,20 +19,33 @@
     <view class="character-wrap {{welcomed ? 'is-ready' : ''}}">
       <view class="halo"></view>
       <view class="character">
+        <view class="selfie-stick">
+          <view class="phone"><view class="phone-lens"></view></view>
+          <view class="stick-line"></view>
+          <view class="grip"></view>
+        </view>
         <view class="character-ear left"></view>
         <view class="character-ear right"></view>
         <view class="character-face">
-          <text class="character-seal">圣</text>
+          <view class="brow left"></view><view class="brow right"></view>
+          <view class="eye left"></view><view class="eye right"></view>
+          <view class="smile"></view>
+        </view>
+        <view class="character-body">
+          <view class="linen-collar"></view>
+          <view class="soft-belly"></view>
         </view>
         <view class="peach-cape"></view>
+        <view class="arm peach-arm"><view class="hand"></view><view class="peach"><view class="peach-leaf"></view></view></view>
+        <view class="arm selfie-arm"><view class="hand"></view></view>
       </view>
-      <view class="welcome-wave">嗨</view>
+      <view class="welcome-wave">今儿挺好</view>
     </view>
 
     <view class="identity">
-      <text class="kicker">退休大圣的故事会客厅</text>
+      <text class="kicker">退休后的桃园生活记录者</text>
       <text class="title">大圣故事工坊</text>
-      <text class="descriptor">上传一张照片 · 说一句故事 · 让平凡日子有光</text>
+      <text class="brand-promise">每一颗桃，都藏着一个故事。</text>
     </view>
 
     <view class="dialogue {{listening ? 'is-listening' : ''}}">
@@ -45,11 +58,11 @@
 
   <view class="actions" catchtap="noop">
     <button class="primary" bindtap="startStory">
-      <text>开始讲故事</text><text class="arrow">→</text>
+      <text>把故事说给大圣</text><text class="arrow">→</text>
     </button>
-    <button class="quiet" bindtap="openInspiration">先在桃园里坐一会儿</button>
+    <button class="quiet" bindtap="openInspiration">先陪大圣看看桃</button>
   </view>
 
-  <view class="relax-tip">轻点桃园，听大圣回应</view>
+  <view class="relax-tip">轻点桃园 · 听大圣回应</view>
   <view wx:if="{{listening}}" class="ripple" style="left:{{rippleX}}%;top:{{rippleY}}%"></view>
 </view>
