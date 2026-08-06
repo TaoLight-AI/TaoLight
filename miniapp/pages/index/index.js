@@ -44,6 +44,8 @@ Page({
     this.relaxTimer = setTimeout(() => this.setData({ listening: false }), 1600)
   },
 
+  noop() {},
+
   startStory() {
     wx.showToast({ title: '故事入口即将开启', icon: 'none' })
   },
