@@ -1,7 +1,16 @@
 const COPY = [
-  { greeting: '老朋友，好久不见。', hint: '今天想让我帮你发现什么故事？' },
-  { greeting: '风刚好，桃子也正甜。', hint: '说说你的故事，俺老孙慢慢听。' },
-  { greeting: '别急，好故事会自己发光。', hint: '一张照片、一句话，就能开始。' }
+  {
+    greeting: '老朋友，好久不见。',
+    hint: '俺老孙今天又发现了一件有意思的事。'
+  },
+  {
+    greeting: '以前俺管天上的蟠桃园。',
+    hint: '现在嘛，喜欢看看人间的桃。'
+  },
+  {
+    greeting: '生活再累，也得给自己留一口甜。',
+    hint: '坐一会儿，听听风，也听听你的故事。'
+  }
 ]
 
 Page({
@@ -23,13 +32,14 @@ Page({
         greeting: COPY[copyIndex].greeting,
         hint: COPY[copyIndex].hint
       })
-    }, 4200)
+    }, 4800)
 
-    setTimeout(() => this.setData({ welcomed: true }), 700)
+    setTimeout(() => this.setData({ welcomed: true }), 500)
   },
 
   onUnload() {
     clearInterval(this.copyTimer)
+    clearTimeout(this.relaxTimer)
   },
 
   handleSceneTap(event) {
@@ -47,7 +57,7 @@ Page({
   noop() {},
 
   startStory() {
-    wx.showToast({ title: '故事入口即将开启', icon: 'none' })
+    wx.showToast({ title: '俺老孙等你开讲', icon: 'none' })
   },
 
   openInspiration() {
@@ -58,6 +68,7 @@ Page({
       hint: COPY[copyIndex].hint,
       listening: true
     })
-    setTimeout(() => this.setData({ listening: false }), 1200)
+    clearTimeout(this.relaxTimer)
+    this.relaxTimer = setTimeout(() => this.setData({ listening: false }), 1200)
   }
 })
