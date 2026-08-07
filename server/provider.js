@@ -9,23 +9,15 @@ function baseUrl() {
   const workspace = process.env.DASHSCOPE_WORKSPACE_ID
   if (region === 'cn-beijing') return `https://${workspace}.cn-beijing.maas.aliyuncs.com`
   if (region === 'ap-southeast-1') return `https://${workspace}.ap-southeast-1.maas.aliyuncs.com`
+  if (region === 'ap-northeast-1') return `https://${workspace}.ap-northeast-1.maas.aliyuncs.com`
   return process.env.DASHSCOPE_BASE_URL || ''
 }
 
-async function postJson(url, payload, extraHeaders = {}) {
+async function requestJson(url, options = {}) {
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), Number(process.env.AI_TIMEOUT_MS || 60000))
   try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        authorization: `Bearer ${process.env.DASHSCOPE_API_KEY}`,
-        ...extraHeaders
-      },
-      body: JSON.stringify(payload),
-      signal: controller.signal
-    })
+    const res = await fetch(url, { ...options, signal: controller.signal })
     const raw = await res.text()
     let data = {}
     try { data = raw ? JSON.parse(raw) : {} } catch (_) { data = { raw } }
@@ -34,6 +26,25 @@ async function postJson(url, payload, extraHeaders = {}) {
   } finally {
     clearTimeout(timer)
   }
+}
+
+async function postJson(url, payload, extraHeaders = {}) {
+  return requestJson(url, {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      authorization: `Bearer ${process.env.DASHSCOPE_API_KEY}`,
+      ...extraHeaders
+    },
+    body: JSON.stringify(payload)
+  })
+}
+
+async function getJson(url) {
+  return requestJson(url, {
+    method: 'GET',
+    headers: { authorization: `Bearer ${process.env.DASHSCOPE_API_KEY}` }
+  })
 }
 
 function parseJsonText(text) {
@@ -78,13 +89,55 @@ async function generatePoster(input) {
 
 async function createVideoTask(input) {
   if (!configured()) return null
+  const firstFrameUrl = input.firstFrameUrl || input.posterUrl || input.imageUrl
+  if (!firstFrameUrl) {
+    return {
+      status: 'needs_reference',
+      provider: 'dashscope',
+      model: process.env.VIDEO_MODEL || 'wan2.7-i2v-2026-04-25',
+      prompt: buildVlogPrompt(input),
+      message: 'firstFrameUrl is required for image-to-video generation'
+    }
+  }
+
+  const model = process.env.VIDEO_MODEL || 'wan2.7-i2v-2026-04-25'
+  const data = await postJson(
+    `${baseUrl()}/api/v1/services/aigc/video-generation/video-synthesis`,
+    {
+      model,
+      input: {
+        prompt: buildVlogPrompt(input),
+        media: [{ type: 'first_frame', url: firstFrameUrl }]
+      },
+      parameters: {
+        resolution: process.env.VIDEO_RESOLUTION || '720P',
+        duration: Number(process.env.VIDEO_DURATION || 10),
+        prompt_extend: true,
+        watermark: false
+      }
+    },
+    { 'X-DashScope-Async': 'enable' }
+  )
+
+  const taskId = data && data.output && data.output.task_id
+  if (!taskId) throw new Error('video_task_id_missing')
+  return { status: 'processing', provider: 'dashscope', model, task_id: taskId, prompt: buildVlogPrompt(input) }
+}
+
+async function getVideoTask(taskId) {
+  if (!configured() || !taskId || taskId === 'mock-video-task') return null
+  const data = await getJson(`${baseUrl()}/api/v1/tasks/${encodeURIComponent(taskId)}`)
+  const output = (data && data.output) || {}
+  const taskStatus = String(output.task_status || '').toUpperCase()
+  const status = taskStatus === 'SUCCEEDED' ? 'completed' : taskStatus === 'FAILED' ? 'failed' : 'processing'
   return {
-    status: 'provider_ready',
+    status,
+    progress: status === 'completed' ? 100 : status === 'failed' ? 0 : 60,
+    video_url: output.video_url || '',
     provider: 'dashscope',
-    model: process.env.VIDEO_MODEL || 'wan2.7-i2v-2026-04-25',
-    prompt: buildVlogPrompt(input),
-    note: 'video provider request intentionally gated until reference image URL and account quota are configured'
+    raw_status: taskStatus,
+    error: output.message || output.code || ''
   }
 }
 
-module.exports = { configured, generateStories, generatePoster, createVideoTask, buildVlogPrompt }
+module.exports = { configured, generateStories, generatePoster, createVideoTask, getVideoTask, buildVlogPrompt, baseUrl }
