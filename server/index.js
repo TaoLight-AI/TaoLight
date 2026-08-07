@@ -1,25 +1,11 @@
 const http = require('http')
 const provider = require('./provider')
+const calibrated = require('./fixtures/chatgpt-calibrated.json')
 
 const PORT = Number(process.env.PORT || 8787)
+const CALIBRATION_MODE = String(process.env.CALIBRATION_MODE || 'true').toLowerCase() !== 'false'
 
-const STORY_LIBRARY = {
-  goodday: [
-    { title: '今天不赶路，陪你看看桃熟了没有', core: '把忙碌留在山外，大圣在桃园里陪一个普通人把日子慢下来。', emotion: '治愈 · 松弛', slogan: '生活再累，也得给自己留一口甜。' },
-    { title: '退休以后，大圣终于学会慢下来', core: '从十万八千里的筋斗，到一亩桃园的风，真正的好日子原来不必赶。', emotion: '松弛 · 人间烟火', slogan: '好桃要慢慢长，好日子也一样。' },
-    { title: '一颗桃，留住了一个夏天', core: '桃子不是商品，而是一家人坐下来、把日子过慢一点的理由。', emotion: '家庭 · 治愈', slogan: '甜一点，日子就亮一点。' }
-  ],
-  farmer: [
-    { title: '种了二十年桃，他第一次想让更多人知道', core: '桃农把半辈子交给桃树，却一直没人知道他的名字。', emotion: '人物 · 传承', slogan: '认真生活的人，值得被看见。' },
-    { title: '天上的蟠桃园长，也佩服这个种桃的人', core: '大圣见过仙桃，却第一次认真看见一颗桃背后真正的辛苦。', emotion: '尊重 · 温暖', slogan: '神仙见过桃，俺老孙今天见到了种桃的人。' },
-    { title: '父亲留下的不是桃园，是一段日子', core: '一片桃园把两代人的时间连在一起，桃熟的时候，记忆也跟着甜起来。', emotion: '亲情 · 传承', slogan: '有些甜，是一代人留给下一代的。' }
-  ],
-  vlog: [
-    { title: '蟠桃园长下凡第一天，就忍不住偷吃了', core: '大圣本想认真探园，结果看到桃子，边举着自拍杆边摘了一颗。', emotion: '反差 · 幽默', slogan: '这不是偷吃，这是专业鉴定。' },
-    { title: '大圣第一次学给桃套袋，嘴硬了三分钟', core: '会七十二变的大圣，被一个桃袋难住，最后老老实实向桃农请教。', emotion: '幽默 · 真实', slogan: '会七十二变，不代表会七十二种农活。' },
-    { title: '不在天庭当牛马，只在平谷做桃仙', core: '大圣拿着自拍杆逃离天庭KPI，在平谷桃园重新找回生活。', emotion: '反差 · 治愈', slogan: '不在天庭当牛马，只在平谷做桃仙。' }
-  ]
-}
+const STORY_LIBRARY = calibrated.templates
 
 function json(res, status, data) {
   res.writeHead(status, {
@@ -41,12 +27,23 @@ function body(req) {
   })
 }
 
+function calibratedStories(template) {
+  return STORY_LIBRARY[template] || STORY_LIBRARY.goodday
+}
+
 const server = http.createServer(async (req, res) => {
   try {
     if (req.method === 'OPTIONS') return json(res, 204, {})
-    if (req.url === '/health') return json(res, 200, { ok: true, service: 'taolight-ai-gateway', mode: provider.configured() ? 'provider+fallback' : 'mock-first' })
+    if (req.url === '/health') return json(res, 200, {
+      ok: true,
+      service: 'taolight-ai-gateway',
+      mode: CALIBRATION_MODE ? 'chatgpt-calibration' : (provider.configured() ? 'provider+fallback' : 'mock-first'),
+      calibrationVersion: calibrated.version
+    })
     if (req.url === '/v1/provider/status') return json(res, 200, {
       configured: provider.configured(),
+      calibrationMode: CALIBRATION_MODE,
+      calibrationVersion: calibrated.version,
       storyModel: process.env.STORY_MODEL || 'qwen3.7-plus',
       imageModel: process.env.IMAGE_MODEL || 'wan2.7-image-pro',
       videoModel: process.env.VIDEO_MODEL || 'wan2.7-i2v-2026-04-25'
@@ -54,23 +51,46 @@ const server = http.createServer(async (req, res) => {
 
     if (req.method === 'POST' && req.url === '/v1/material/analyze') {
       const input = await body(req).catch(() => ({}))
-      return json(res, 200, { scene: input.imagePath || input.imageUrl ? 'peach_image' : 'unknown', notes: ['优先识别真实桃、桃树、桃园和人物关系', '故事优先，不把参数堆给桃农'] })
+      return json(res, 200, {
+        scene: input.imagePath || input.imageUrl ? 'peach_image' : 'unknown',
+        notes: ['优先识别真实桃、桃树、桃园和人物关系', '故事优先，不把参数堆给桃农'],
+        provider: CALIBRATION_MODE ? 'chatgpt-calibrated' : 'gateway'
+      })
     }
 
     if (req.method === 'POST' && req.url === '/v1/story/cores') {
       const input = await body(req).catch(() => ({}))
+      const template = input.template || 'goodday'
+
+      if (CALIBRATION_MODE) {
+        return json(res, 200, {
+          taskId: `story-${Date.now()}`,
+          stories: calibratedStories(template),
+          provider: 'chatgpt-calibrated',
+          calibrationVersion: calibrated.version
+        })
+      }
+
       try {
         const generated = await provider.generateStories(input)
         if (generated) return json(res, 200, { taskId: `story-${Date.now()}`, ...generated })
       } catch (err) {
         console.error('story provider failed; falling back:', err.message)
       }
-      const template = input.template || 'goodday'
-      return json(res, 200, { taskId: `story-${Date.now()}`, stories: STORY_LIBRARY[template] || STORY_LIBRARY.goodday, provider: 'mock' })
+      return json(res, 200, { taskId: `story-${Date.now()}`, stories: calibratedStories(template), provider: 'calibrated-fallback' })
     }
 
     if (req.method === 'POST' && req.url === '/v1/poster/generate') {
       const input = await body(req).catch(() => ({}))
+      if (CALIBRATION_MODE) {
+        return json(res, 200, {
+          poster_url: '',
+          story_core: input.storyCore || {},
+          poster_prompt: (input.storyCore && input.storyCore.poster_scene) || '',
+          provider: 'chatgpt-calibrated',
+          status: 'prompt_ready'
+        })
+      }
       try {
         const generated = await provider.generatePoster(input)
         if (generated) return json(res, 200, { ...generated, story_core: input.storyCore || {}, status: 'ready' })
@@ -82,14 +102,18 @@ const server = http.createServer(async (req, res) => {
 
     if (req.method === 'POST' && req.url === '/v1/video/generate') {
       const input = await body(req).catch(() => ({}))
+      if (CALIBRATION_MODE) {
+        return json(res, 200, {
+          video_task_id: 'chatgpt-calibration-video',
+          status: 'director_ready',
+          provider: 'chatgpt-calibrated',
+          prompt: provider.buildVlogPrompt(input)
+        })
+      }
       try {
         const task = await provider.createVideoTask(input)
-        if (task && task.task_id) {
-          return json(res, 200, { video_task_id: task.task_id, status: task.status, provider: task.provider, model: task.model, prompt: task.prompt })
-        }
-        if (task && task.status === 'needs_reference') {
-          return json(res, 200, { video_task_id: '', ...task })
-        }
+        if (task && task.task_id) return json(res, 200, { video_task_id: task.task_id, status: task.status, provider: task.provider, model: task.model, prompt: task.prompt })
+        if (task && task.status === 'needs_reference') return json(res, 200, { video_task_id: '', ...task })
       } catch (err) {
         console.error('video provider failed; falling back:', err.message)
       }
@@ -97,6 +121,18 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (req.method === 'GET' && req.url.startsWith('/v1/video/tasks/')) {
+      if (CALIBRATION_MODE) {
+        return json(res, 200, {
+          status: 'completed',
+          progress: 100,
+          video_url: '',
+          provider: 'chatgpt-calibrated',
+          platform_copy: {
+            douyin: '蟠桃园长下凡第一天，就忍不住先尝了一口。',
+            xiaohongshu: '今天跟着大圣去平谷桃园，慢了一会儿。'
+          }
+        })
+      }
       const taskId = decodeURIComponent(req.url.slice('/v1/video/tasks/'.length).split('?')[0])
       try {
         const task = await provider.getVideoTask(taskId)
@@ -107,13 +143,7 @@ const server = http.createServer(async (req, res) => {
       } catch (err) {
         console.error('video task provider failed; falling back:', err.message)
       }
-      return json(res, 200, {
-        status: 'completed', progress: 100, video_url: '', provider: 'mock',
-        platform_copy: {
-          douyin: '退休后的蟠桃园长，为什么跑到平谷来了？',
-          xiaohongshu: '今天跟着大圣去桃园里慢了一会儿。'
-        }
-      })
+      return json(res, 200, { status: 'completed', progress: 100, video_url: '', provider: 'mock' })
     }
 
     return json(res, 404, { error: 'not_found' })
