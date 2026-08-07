@@ -1,0 +1,24 @@
+<view class="page">
+  <view class="kicker">大圣Vlog体验版</view>
+  <view class="title">故事已经有样子了。</view>
+  <view class="status-card">
+    <view class="status-row"><text>{{statusText}}</text><text>{{progress}}%</text></view>
+    <view class="bar"><view class="fill" style="width:{{progress}}%"></view></view>
+  </view>
+
+  <view class="script-card">
+    <text class="script-title">《{{story.title}}》</text>
+    <view class="shot"><text class="time">0-4s</text><text class="shot-title">开场钩子</text><text class="copy">自拍杆轻晃。大圣边走边说：老朋友，今天不赶路，陪俺看看这桃熟了没有。</text></view>
+    <view class="shot"><text class="time">4-14s</text><text class="shot-title">真实发现</text><text class="copy">大圣走到桃树前，先闻一闻，忍不住摘下一颗：咳，这不是偷吃，这是专业鉴定。</text></view>
+    <view class="shot"><text class="time">14-24s</text><text class="shot-title">桃农入场</text><text class="copy">大圣把镜头转给桃农，一问一答，讲这片桃园为什么值得被看见。</text></view>
+    <view class="shot"><text class="time">24-27s</text><text class="shot-title">情绪落点</text><text class="copy">{{story.slogan}}</text></view>
+    <view class="shot final"><text class="time">27-30s</text><text class="shot-title">统一片尾</text><text class="copy">桃紫有光 LOGO + 招新二维码 + “扫一扫，让大圣发现你的故事”。</text></view>
+  </view>
+
+  <view class="platforms">
+    <view><text class="platform">抖音</text><text class="platform-copy">退休后的蟠桃园长，为什么跑到平谷来了？</text></view>
+    <view><text class="platform">小红书</text><text class="platform-copy">今天跟着大圣去桃园里慢了一会儿。</text></view>
+  </view>
+
+  <button class="primary" bindtap="restart">再讲一个故事</button>
+</view>

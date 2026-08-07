@@ -1,16 +1,7 @@
 const COPY = [
-  {
-    greeting: '老朋友，好久不见。',
-    hint: '俺老孙今天又发现了一件有意思的事。'
-  },
-  {
-    greeting: '以前俺管天上的蟠桃园。',
-    hint: '现在嘛，喜欢看看人间的桃。'
-  },
-  {
-    greeting: '生活再累，也得给自己留一口甜。',
-    hint: '坐一会儿，听听风，也听听你的故事。'
-  }
+  { greeting: '老朋友，好久不见。', hint: '俺老孙今天又发现了一件有意思的事。' },
+  { greeting: '以前俺管天上的蟠桃园。', hint: '现在嘛，喜欢看看人间的桃。' },
+  { greeting: '生活再累，也得给自己留一口甜。', hint: '坐一会儿，听听风，也听听你的故事。' }
 ]
 
 Page({
@@ -27,13 +18,8 @@ Page({
   onLoad() {
     this.copyTimer = setInterval(() => {
       const copyIndex = (this.data.copyIndex + 1) % COPY.length
-      this.setData({
-        copyIndex,
-        greeting: COPY[copyIndex].greeting,
-        hint: COPY[copyIndex].hint
-      })
+      this.setData({ copyIndex, greeting: COPY[copyIndex].greeting, hint: COPY[copyIndex].hint })
     }, 4800)
-
     setTimeout(() => this.setData({ welcomed: true }), 500)
   },
 
@@ -44,11 +30,7 @@ Page({
 
   handleSceneTap(event) {
     const { x = 187, y = 330 } = event.detail || {}
-    this.setData({
-      listening: true,
-      rippleX: Math.round((x / 375) * 100),
-      rippleY: Math.round((y / 700) * 100)
-    })
+    this.setData({ listening: true, rippleX: Math.round((x / 375) * 100), rippleY: Math.round((y / 700) * 100) })
     wx.vibrateShort({ type: 'light' })
     clearTimeout(this.relaxTimer)
     this.relaxTimer = setTimeout(() => this.setData({ listening: false }), 1600)
@@ -57,17 +39,12 @@ Page({
   noop() {},
 
   startStory() {
-    wx.showToast({ title: '俺老孙等你开讲', icon: 'none' })
+    wx.navigateTo({ url: '/pages/create/create' })
   },
 
   openInspiration() {
     const copyIndex = (this.data.copyIndex + 1) % COPY.length
-    this.setData({
-      copyIndex,
-      greeting: COPY[copyIndex].greeting,
-      hint: COPY[copyIndex].hint,
-      listening: true
-    })
+    this.setData({ copyIndex, greeting: COPY[copyIndex].greeting, hint: COPY[copyIndex].hint, listening: true })
     clearTimeout(this.relaxTimer)
     this.relaxTimer = setTimeout(() => this.setData({ listening: false }), 1200)
   }

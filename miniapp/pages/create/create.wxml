@@ -1,0 +1,29 @@
+<view class="page">
+  <view class="topbar"><text class="back" bindtap="goBack">‹</text><text>把故事说给大圣</text></view>
+  <view class="guide">
+    <text class="eyebrow">第一步</text>
+    <text class="title">来，让俺老孙看看你的桃。</text>
+    <text class="sub">不用懂短视频。拍一张、说一句，剩下的交给大圣。</text>
+  </view>
+
+  <view class="photo-card" bindtap="chooseImage">
+    <image wx:if="{{imagePath}}" src="{{imagePath}}" mode="aspectFill" class="preview"></image>
+    <view wx:else class="photo-empty"><text class="plus">＋</text><text>拍一张 / 选一张桃子的照片</text></view>
+  </view>
+
+  <view class="input-card">
+    <text class="label">再告诉我一句：这颗桃有什么故事？</text>
+    <textarea maxlength="120" placeholder="比如：这是父亲留下的桃园，今年第一次想让更多人知道。" value="{{storyText}}" bindinput="onStoryInput"></textarea>
+    <view class="voice">🎙 说给大圣听 <text class="soon">体验版</text></view>
+  </view>
+
+  <view class="section-title">想怎么讲？选一个就行</view>
+  <view class="templates">
+    <view wx:for="{{templates}}" wx:key="id" data-id="{{item.id}}" bindtap="chooseTemplate" class="template {{selectedTemplate===item.id?'active':''}}">
+      <text class="template-title">{{item.title}}</text>
+      <text class="template-tag">{{item.tag}}</text>
+    </view>
+  </view>
+
+  <button class="primary" bindtap="submit">让大圣想想故事　→</button>
+</view>
