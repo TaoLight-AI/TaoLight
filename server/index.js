@@ -54,7 +54,7 @@ const server = http.createServer(async (req, res) => {
 
     if (req.method === 'POST' && req.url === '/v1/material/analyze') {
       const input = await body(req).catch(() => ({}))
-      return json(res, 200, { scene: input.imagePath ? 'peach_image' : 'unknown', notes: ['优先识别真实桃、桃树、桃园和人物关系', '故事优先，不把参数堆给桃农'] })
+      return json(res, 200, { scene: input.imagePath || input.imageUrl ? 'peach_image' : 'unknown', notes: ['优先识别真实桃、桃树、桃园和人物关系', '故事优先，不把参数堆给桃农'] })
     }
 
     if (req.method === 'POST' && req.url === '/v1/story/cores') {
@@ -82,14 +82,33 @@ const server = http.createServer(async (req, res) => {
 
     if (req.method === 'POST' && req.url === '/v1/video/generate') {
       const input = await body(req).catch(() => ({}))
-      const plan = await provider.createVideoTask(input)
-      if (plan && plan.status === 'provider_ready') return json(res, 200, { video_task_id: 'provider-pending-config', status: 'needs_reference', ...plan })
+      try {
+        const task = await provider.createVideoTask(input)
+        if (task && task.task_id) {
+          return json(res, 200, { video_task_id: task.task_id, status: task.status, provider: task.provider, model: task.model, prompt: task.prompt })
+        }
+        if (task && task.status === 'needs_reference') {
+          return json(res, 200, { video_task_id: '', ...task })
+        }
+      } catch (err) {
+        console.error('video provider failed; falling back:', err.message)
+      }
       return json(res, 200, { video_task_id: 'mock-video-task', status: 'processing', provider: 'mock', prompt: provider.buildVlogPrompt(input) })
     }
 
     if (req.method === 'GET' && req.url.startsWith('/v1/video/tasks/')) {
+      const taskId = decodeURIComponent(req.url.slice('/v1/video/tasks/'.length).split('?')[0])
+      try {
+        const task = await provider.getVideoTask(taskId)
+        if (task) return json(res, 200, { ...task, platform_copy: {
+          douyin: '退休后的蟠桃园长，为什么跑到平谷来了？',
+          xiaohongshu: '今天跟着大圣去桃园里慢了一会儿。'
+        } })
+      } catch (err) {
+        console.error('video task provider failed; falling back:', err.message)
+      }
       return json(res, 200, {
-        status: 'completed', progress: 100, video_url: '',
+        status: 'completed', progress: 100, video_url: '', provider: 'mock',
         platform_copy: {
           douyin: '退休后的蟠桃园长，为什么跑到平谷来了？',
           xiaohongshu: '今天跟着大圣去桃园里慢了一会儿。'
