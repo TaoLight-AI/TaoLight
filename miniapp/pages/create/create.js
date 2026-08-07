@@ -12,6 +12,10 @@ Page({
     selectedTemplate: 'goodday'
   },
 
+  goBack() {
+    wx.navigateBack()
+  },
+
   chooseImage() {
     wx.chooseMedia({
       count: 1,
