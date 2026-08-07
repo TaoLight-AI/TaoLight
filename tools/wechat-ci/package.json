@@ -3,8 +3,9 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    "preview": "node preview.js",
-    "upload": "node upload.js"
+    "validate": "node validate.js",
+    "preview": "npm run validate && node preview.js",
+    "upload": "npm run validate && node upload.js"
   },
   "dependencies": {
     "miniprogram-ci": "^1.9.19"
