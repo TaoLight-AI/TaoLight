@@ -1,5 +1,11 @@
 {
-  "pages": ["pages/index/index"],
+  "pages": [
+    "pages/index/index",
+    "pages/create/create",
+    "pages/story/story",
+    "pages/poster/poster",
+    "pages/result/result"
+  ],
   "window": {
     "navigationStyle": "custom",
     "backgroundColor": "#F7F0E6",
