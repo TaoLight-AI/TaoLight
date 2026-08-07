@@ -6,6 +6,21 @@
     <view class="bar"><view class="fill" style="width:{{progress}}%"></view></view>
   </view>
 
+  <view wx:if="{{videoUrl}}" class="video-card">
+    <video class="video-player" src="{{videoUrl}}" controls object-fit="cover" poster="" show-center-play-btn></video>
+    <view class="video-note">真实生成成片 · {{provider}}</view>
+  </view>
+
+  <view wx:if="{{needsReference}}" class="hint-card">
+    <text class="hint-title">成片链路已就绪</text>
+    <text class="hint-copy">当前还缺一张可公网访问的首帧海报。海报生成成功后，系统会自动把它送入大圣Vlog视频模型。</text>
+  </view>
+
+  <view wx:if="{{failed}}" class="hint-card warning">
+    <text class="hint-title">这次生成没成功</text>
+    <text class="hint-copy">导演稿和故事核已经保留，不让桃农重新填写资料。后续可直接再次生成视频。</text>
+  </view>
+
   <view class="script-card">
     <text class="script-title">《{{story.title}}》</text>
     <view class="shot"><text class="time">0-4s</text><text class="shot-title">开场钩子</text><text class="copy">自拍杆轻晃。大圣边走边说：老朋友，今天不赶路，陪俺看看这桃熟了没有。</text></view>
@@ -16,8 +31,8 @@
   </view>
 
   <view class="platforms">
-    <view><text class="platform">抖音</text><text class="platform-copy">退休后的蟠桃园长，为什么跑到平谷来了？</text></view>
-    <view><text class="platform">小红书</text><text class="platform-copy">今天跟着大圣去桃园里慢了一会儿。</text></view>
+    <view><text class="platform">抖音</text><text class="platform-copy">{{platformCopy.douyin || '退休后的蟠桃园长，为什么跑到平谷来了？'}}</text></view>
+    <view><text class="platform">小红书</text><text class="platform-copy">{{platformCopy.xiaohongshu || '今天跟着大圣去桃园里慢了一会儿。'}}</text></view>
   </view>
 
   <button class="primary" bindtap="restart">再讲一个故事</button>
