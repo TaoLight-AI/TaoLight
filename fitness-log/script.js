@@ -1,9 +1,14 @@
 const SUPABASE_URL="https://cjayajcjmpjjczwueyur.supabase.co";
 const SUPABASE_KEY="sb_publishable_gID5KWmnvlNS3acHBkyETg_W6ACSKdB";
-const extraStyle=document.createElement("link");extraStyle.rel="stylesheet";extraStyle.href="./style-extra.css?v=20260823-3";document.head.appendChild(extraStyle);
+const extraStyle=document.createElement("link");extraStyle.rel="stylesheet";extraStyle.href="./style-extra.css?v=20260823-4";document.head.appendChild(extraStyle);
 const chartStyle=document.createElement("link");chartStyle.rel="stylesheet";chartStyle.href="./style-charts.css?v=20260823-3";document.head.appendChild(chartStyle);
-const $=s=>document.querySelector(s),key=new URLSearchParams(location.search).get("key")||localStorage.getItem("fitness-key")||"";
-let allRows=[];if(key)localStorage.setItem("fitness-key",key);const today=()=>new Date().toLocaleDateString("en-CA");$("#date").value=today();
+const $=s=>document.querySelector(s),urlKey=new URLSearchParams(location.search).get("key")||"";let key=urlKey||localStorage.getItem("fitness-key")||"";
+let allRows=[];if(urlKey){localStorage.setItem("fitness-key",urlKey);history.replaceState({},document.title,location.pathname+location.hash)}const today=()=>new Date().toLocaleDateString("en-CA");$("#date").value=today();
+function syncAccountUI(){const bound=Boolean(key);$("#accountButton").textContent=bound?"● 已免登录绑定":"○ 恢复账户";$("#accountButton").classList.toggle("unbound",!bound);$("#boundAccount").classList.toggle("hidden",!bound);$("#restoreAccount").classList.toggle("hidden",bound);if(!bound)$("#accountModal").classList.remove("hidden")}
+$("#accountButton").onclick=()=>{$("#accountModal").classList.remove("hidden");syncAccountUI()};$("#closeAccount").onclick=()=>$("#accountModal").classList.add("hidden");
+$("#copyRecovery").onclick=async()=>{try{await navigator.clipboard.writeText(key);note("恢复码已复制，请只保存到你自己的备忘录中")}catch{prompt("请复制并妥善保存恢复码",key)}};
+$("#restoreButton").onclick=async()=>{const value=$("#recoveryInput").value.trim();if(!/^[A-Za-z0-9_-]{20,}$/.test(value))return note("恢复码格式不正确");try{await rpc("list_fitness_logs",{p_key:value});key=value;localStorage.setItem("fitness-key",key);allRows=[];syncAccountUI();$("#accountModal").classList.add("hidden");note("账户恢复成功，此微信以后将自动进入");await ensureRows(true)}catch{note("恢复码无效，请检查后重试")}};
+syncAccountUI();
 $("#mascot").style.backgroundImage="url('./fitness-mascot-v1.webp')";
 document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=async()=>{document.querySelectorAll("[data-tab]").forEach(x=>x.classList.remove("active"));b.classList.add("active");["form","history","coach"].forEach(t=>$("#"+t+"View").classList.toggle("hidden",b.dataset.tab!==t));if(b.dataset.tab!=="form")await ensureRows();if(b.dataset.tab==="history")renderHistory(allRows);if(b.dataset.tab==="coach")renderCoach(allRows)});
 const note=t=>{$("#notice").textContent=t;$("#notice").classList.remove("hidden");scrollTo({top:0,behavior:"smooth"})};
