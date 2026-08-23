@@ -1,0 +1,2 @@
+export async function allowed(key="",env={}){const digest=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(key));return [...new Uint8Array(digest)].map(x=>x.toString(16).padStart(2,"0")).join("")===String(env.ACCESS_HASH||"")}
+export function json(data,status=200){return new Response(JSON.stringify(data),{status,headers:{"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"}})}
