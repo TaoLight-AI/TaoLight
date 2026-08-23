@@ -3,6 +3,7 @@ const SUPABASE_KEY="sb_publishable_gID5KWmnvlNS3acHBkyETg_W6ACSKdB";
 const extraStyle=document.createElement("link");extraStyle.rel="stylesheet";extraStyle.href="./style-extra.css?v=20260823-3";document.head.appendChild(extraStyle);
 const $=s=>document.querySelector(s),key=new URLSearchParams(location.search).get("key")||localStorage.getItem("fitness-key")||"";
 let allRows=[];if(key)localStorage.setItem("fitness-key",key);const today=()=>new Date().toLocaleDateString("en-CA");$("#date").value=today();
+$("#mascot").style.backgroundImage="url('./fitness-mascot-v1.webp')";
 document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=async()=>{document.querySelectorAll("[data-tab]").forEach(x=>x.classList.remove("active"));b.classList.add("active");["form","history","coach"].forEach(t=>$("#"+t+"View").classList.toggle("hidden",b.dataset.tab!==t));if(b.dataset.tab!=="form")await ensureRows();if(b.dataset.tab==="history")renderHistory(allRows);if(b.dataset.tab==="coach")renderCoach(allRows)});
 const note=t=>{$("#notice").textContent=t;$("#notice").classList.remove("hidden");scrollTo({top:0,behavior:"smooth"})};
 $("#files").onchange=e=>$("#fileText").textContent=`已选择 ${Math.min(e.target.files.length,6)} 张截图`;
