@@ -1,6 +1,6 @@
 const SUPABASE_URL="https://cjayajcjmpjjczwueyur.supabase.co";
 const SUPABASE_KEY="sb_publishable_gID5KWmnvlNS3acHBkyETg_W6ACSKdB";
-const extraStyle=document.createElement("link");extraStyle.rel="stylesheet";extraStyle.href="./style-extra.css?v=20260823-4";document.head.appendChild(extraStyle);
+const extraStyle=document.createElement("link");extraStyle.rel="stylesheet";extraStyle.href="./style-extra.css?v=20260823-5";document.head.appendChild(extraStyle);
 const chartStyle=document.createElement("link");chartStyle.rel="stylesheet";chartStyle.href="./style-charts.css?v=20260823-3";document.head.appendChild(chartStyle);
 const $=s=>document.querySelector(s),urlKey=new URLSearchParams(location.search).get("key")||"";let key=urlKey||localStorage.getItem("fitness-key")||"";
 let allRows=[];if(urlKey){localStorage.setItem("fitness-key",urlKey);history.replaceState({},document.title,location.pathname+location.hash)}const today=()=>new Date().toLocaleDateString("en-CA");$("#date").value=today();
