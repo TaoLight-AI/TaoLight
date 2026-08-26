@@ -1,0 +1,2 @@
+[functions.tencent-tts]
+verify_jwt = false
