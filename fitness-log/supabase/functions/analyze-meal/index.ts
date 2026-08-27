@@ -1,81 +1,26 @@
-const cors = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
+const cors={"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"authorization, apikey, content-type","Access-Control-Allow-Methods":"POST, OPTIONS"};
+const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{...cors,"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"}});
+type Density={kcal:number;protein:number;carbs:number;fat:number};
+// 每100克可食部分。常见中式餐食由数据表确定性计算，未命中项才使用视觉模型估计的营养密度。
+const FOOD_DB:Record<string,Density>={
+ cooked_rice:{kcal:116,protein:2.6,carbs:25.9,fat:.3},rice_porridge:{kcal:46,protein:1.1,carbs:9.9,fat:.3},cooked_noodles:{kcal:110,protein:3.4,carbs:23,fat:.4},steamed_bun:{kcal:223,protein:7,carbs:47,fat:1.1},bread:{kcal:265,protein:9,carbs:49,fat:3.2},sweet_potato:{kcal:86,protein:1.6,carbs:20.1,fat:.1},potato:{kcal:77,protein:2,carbs:17,fat:.1},corn:{kcal:112,protein:4,carbs:22.8,fat:1.2},
+ egg:{kcal:144,protein:13.3,carbs:2.8,fat:8.8},whole_milk:{kcal:61,protein:3.2,carbs:4.8,fat:3.3},yogurt:{kcal:72,protein:2.5,carbs:9.3,fat:2.7},chicken_breast:{kcal:165,protein:31,carbs:0,fat:3.6},chicken_thigh:{kcal:209,protein:26,carbs:0,fat:10.9},lean_beef:{kcal:200,protein:26,carbs:0,fat:10},lean_pork:{kcal:210,protein:29,carbs:0,fat:9},pork_belly:{kcal:518,protein:9.3,carbs:0,fat:53},fish:{kcal:128,protein:22,carbs:0,fat:4},shrimp:{kcal:99,protein:24,carbs:.2,fat:.3},tofu:{kcal:84,protein:8.1,carbs:4.2,fat:4.2},
+ leafy_vegetable:{kcal:25,protein:2,carbs:4,fat:.3},broccoli:{kcal:35,protein:2.4,carbs:7.2,fat:.4},tomato:{kcal:18,protein:.9,carbs:3.9,fat:.2},cucumber:{kcal:15,protein:.7,carbs:3.6,fat:.1},apple:{kcal:52,protein:.3,carbs:13.8,fat:.2},banana:{kcal:89,protein:1.1,carbs:22.8,fat:.3},orange:{kcal:47,protein:.9,carbs:11.8,fat:.1},nuts:{kcal:607,protein:20,carbs:21,fat:54},cooking_oil:{kcal:884,protein:0,carbs:0,fat:100}
 };
+const schema={type:"object",additionalProperties:false,properties:{items:{type:"array",items:{type:"object",additionalProperties:false,properties:{name:{type:"string"},food_key:{type:"string"},estimated_grams:{type:"number"},portion_basis:{type:"string"},model_kcal_per_100g:{type:"number"},model_protein_per_100g:{type:"number"},model_carbs_per_100g:{type:"number"},model_fat_per_100g:{type:"number"},confidence:{type:"string",enum:["low","medium","high"]}},required:["name","food_key","estimated_grams","portion_basis","model_kcal_per_100g","model_protein_per_100g","model_carbs_per_100g","model_fat_per_100g","confidence"]}},inferred_oil_level:{type:"string",enum:["light","normal","heavy"]},estimated_added_oil_g:{type:"number"},assumptions:{type:"string"}},required:["items","inferred_oil_level","estimated_added_oil_g","assumptions"]};
+const round=(n:number,d=0)=>Number(n.toFixed(d));
 
-const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), {
-  status,
-  headers: { ...cors, "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" },
-});
-
-const schema = {
-  type: "object",
-  additionalProperties: false,
-  properties: {
-    items: {
-      type: "array",
-      items: {
-        type: "object",
-        additionalProperties: false,
-        properties: {
-          name: { type: "string" },
-          portion: { type: "string" },
-          calories: { type: "number" },
-        },
-        required: ["name", "portion", "calories"],
-      },
-    },
-    estimated_calories: { type: "number" },
-    calorie_min: { type: "number" },
-    calorie_max: { type: "number" },
-    protein_g: { type: "number" },
-    carbs_g: { type: "number" },
-    fat_g: { type: "number" },
-    confidence: { type: "string", enum: ["low", "medium", "high"] },
-    assumptions: { type: "string" },
-  },
-  required: ["items", "estimated_calories", "calorie_min", "calorie_max", "protein_g", "carbs_g", "fat_g", "confidence", "assumptions"],
-};
-
-Deno.serve(async (request) => {
-  if (request.method === "OPTIONS") return new Response(null, { headers: cors });
-  if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
-
-  try {
-    const apiKey = Deno.env.get("OPENAI_API_KEY") || "";
-    if (!apiKey) return json({ error: "食物识别服务尚未配置 OPENAI_API_KEY" }, 503);
-    const { image, meal_type, context } = await request.json();
-    const imageData = String(image || "");
-    const description = String(context || "").trim().slice(0, 500);
-    const hasImage = Boolean(imageData);
-    if (!hasImage && !description) return json({ error: "请拍摄食物照片或填写文字描述" }, 400);
-    if (hasImage && !/^data:image\/(jpeg|jpg|png|webp);base64,/.test(imageData)) return json({ error: "图片格式不支持" }, 400);
-    if (imageData.length > 2_800_000) return json({ error: "图片过大，请重新拍摄" }, 413);
-
-    const response = await fetch("https://api.openai.com/v1/responses", {
-      method: "POST",
-      headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: Deno.env.get("OPENAI_VISION_MODEL") || "gpt-4o-mini",
-        store: false,
-        input: [{
-          role: "user",
-          content: [
-            { type: "input_text", text: `你是谨慎的注册营养师助理。根据用户提供的${hasImage ? "食物照片" : "文字描述"}${hasImage && description ? "与补充文字" : ""}，识别${String(meal_type || "一餐")}中的食物，先估算每项可食重量或常见份量，再估算总热量和三大营养素。文字描述：${description || "无"}。需要把烹调油、酱汁、饮料等容易漏算的来源纳入合理区间；无法判断的份量必须写入 assumptions，并降低 confidence。不要把结果说成精确测量，不提供诊断。` },
-            ...(hasImage ? [{ type: "input_image", image_url: imageData, detail: "high" }] : []),
-          ],
-        }],
-        text: { format: { type: "json_schema", name: "meal_nutrition", strict: true, schema } },
-      }),
-    });
-    const result = await response.json();
-    if (!response.ok) return json({ error: result?.error?.message || "营养识别服务请求失败" }, 502);
-    const outputText = result.output_text || result.output?.flatMap((item: any) => item.content || []).find((item: any) => item.type === "output_text")?.text;
-    if (!outputText) return json({ error: "营养识别服务未返回结果" }, 502);
-    const nutrition = JSON.parse(outputText);
-    return json({ ...nutrition, photo_stored: false, model_generated: true });
-  } catch (error) {
-    return json({ error: error instanceof Error ? error.message : "食物识别失败" }, 500);
-  }
-});
+export default{async fetch(request:Request){
+ if(request.method==="OPTIONS")return new Response(null,{headers:cors});if(request.method!=="POST")return json({error:"Method not allowed"},405);
+ try{
+  const apiKey=Deno.env.get("OPENAI_API_KEY")||"";if(!apiKey)return json({error:"食物识别服务尚未配置 OPENAI_API_KEY"},503);
+  const{image,meal_type,context}=await request.json(),imageData=String(image||""),description=String(context||"").trim().slice(0,500),hasImage=Boolean(imageData);
+  if(!hasImage&&!description)return json({error:"请拍摄食物照片或填写文字描述"},400);if(hasImage&&!/^data:image\/(jpeg|jpg|png|webp);base64,/.test(imageData))return json({error:"图片格式不支持"},400);if(imageData.length>2_800_000)return json({error:"图片过大，请重新拍摄"},413);
+  const response=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{Authorization:`Bearer ${apiKey}`,"Content-Type":"application/json"},body:JSON.stringify({model:Deno.env.get("OPENAI_VISION_MODEL")||"gpt-4o-mini",store:false,input:[{role:"user",content:[{type:"input_text",text:`你是食物视觉分割与份量估算器。逐项识别${String(meal_type||"一餐")}中可见食物，估算可食重量克数并说明依据。food_key 优先严格选择：${Object.keys(FOOD_DB).join(",")}；不匹配才写 other 并给出每100克营养密度。识别烹调方式，单独估计整餐隐藏添加油克数和清淡/正常/偏油等级，不要把油重复算进食物密度。补充文字：${description||"无"}。没有比例参照物时降低份量置信度，不虚构精确测量。`},...(hasImage?[{type:"input_image",image_url:imageData,detail:"high"}]:[])}],text:{format:{type:"json_schema",name:"meal_vision",strict:true,schema}}})});
+  const result=await response.json();if(!response.ok)return json({error:result?.error?.message||"营养识别服务请求失败"},502);const outputText=result.output_text||result.output?.flatMap((x:any)=>x.content||[]).find((x:any)=>x.type==="output_text")?.text;if(!outputText)return json({error:"营养识别服务未返回结果"},502);const vision=JSON.parse(outputText);
+  let dbMatches=0,calories=0,protein=0,carbs=0,fat=0;const items=(vision.items||[]).map((item:any)=>{const grams=Math.max(0,Math.min(2000,Number(item.estimated_grams)||0)),density=FOOD_DB[item.food_key]||{kcal:Number(item.model_kcal_per_100g)||0,protein:Number(item.model_protein_per_100g)||0,carbs:Number(item.model_carbs_per_100g)||0,fat:Number(item.model_fat_per_100g)||0},source=FOOD_DB[item.food_key]?"nutrition_db":"ai_density";if(source==="nutrition_db")dbMatches++;const ratio=grams/100,computed={calories:round(density.kcal*ratio),protein_g:round(density.protein*ratio,1),carbs_g:round(density.carbs*ratio,1),fat_g:round(density.fat*ratio,1)};calories+=computed.calories;protein+=computed.protein_g;carbs+=computed.carbs_g;fat+=computed.fat_g;return{name:item.name,food_key:item.food_key,estimated_grams:round(grams),portion:`约${round(grams)}克`,portion_basis:item.portion_basis,source,confidence:item.confidence,...computed}});
+  const oilG=Math.max(0,Math.min(80,Number(vision.estimated_added_oil_g)||0));if(oilG>0){const oilCalories=round(oilG*8.84);items.push({name:"烹调油/酱汁油脂",food_key:"cooking_oil",estimated_grams:round(oilG),portion:`约${round(oilG)}克`,portion_basis:"依据表面油光、烹调方式和常见用量估算",source:"nutrition_db",confidence:"low",calories:oilCalories,protein_g:0,carbs_g:0,fat_g:round(oilG,1)});calories+=oilCalories;fat+=oilG;dbMatches++}
+  const confidences=items.map((x:any)=>x.confidence),confidence=confidences.includes("low")||dbMatches<items.length?"low":confidences.includes("medium")?"medium":"high",uncertainty=confidence==="low"?.28:confidence==="medium"?.2:.12;
+  return json({items,estimated_calories:round(calories),calorie_min:round(calories*(1-uncertainty)),calorie_max:round(calories*(1+uncertainty)),protein_g:round(protein,1),carbs_g:round(carbs,1),fat_g:round(fat,1),confidence,oil_level:vision.inferred_oil_level,assumptions:vision.assumptions,database_match_rate:items.length?round(dbMatches/items.length*100):0,photo_stored:false,model_generated:true,calculation_pipeline:"vision_portion_plus_nutrition_database"});
+ }catch(error){return json({error:error instanceof Error?error.message:"食物识别失败"},500)}
+}};

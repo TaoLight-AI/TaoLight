@@ -2,7 +2,7 @@ const cors={"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"au
 const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{...cors,"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"}});
 const schema={type:"object",additionalProperties:false,properties:{status:{type:"string"},headline:{type:"string"},priority:{type:"string"},achievement:{type:"string"},training_analysis:{type:"string"},nutrition_analysis:{type:"string"},recovery_analysis:{type:"string"},tomorrow_plan:{type:"string"},evidence:{type:"array",items:{type:"string"}},confidence:{type:"string",enum:["low","medium","high"]}},required:["status","headline","priority","achievement","training_analysis","nutrition_analysis","recovery_analysis","tomorrow_plan","evidence","confidence"]};
 
-Deno.serve(async request=>{
+export default { async fetch(request: Request) {
   if(request.method==="OPTIONS")return new Response(null,{headers:cors});
   if(request.method!=="POST")return json({error:"Method not allowed"},405);
   try{
@@ -17,4 +17,4 @@ Deno.serve(async request=>{
     if(!output)return json({error:"教练分析服务未返回结果"},502);
     return json({...JSON.parse(output),model_generated:true});
   }catch(error){return json({error:error instanceof Error?error.message:"教练分析失败"},500)}
-});
+} };
