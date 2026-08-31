@@ -9,7 +9,9 @@ Page({
     taskId: '',
     videoUrl: '',
     platformCopy: {},
-    provider: 'mock'
+    provider: 'mock',
+    needsReference: false,
+    failed: false
   },
 
   onLoad() {
@@ -39,10 +41,27 @@ Page({
         platformCopy: result.platform_copy || {},
         provider: result.provider || 'unknown'
       })
+
+      if (result.status === 'needs_reference') {
+        this.setData({
+          needsReference: true,
+          progress: 100,
+          statusText: '故事导演稿已准备好，等首帧海报就能生成成片。'
+        })
+        return
+      }
+
+      if (result.status === 'failed') {
+        this.setData({ failed: true, progress: 0, statusText: '这条片子没生成好，先保留导演稿。' })
+        return
+      }
+
       if (result.status === 'completed' || result.video_url) {
         this.setData({ progress: 100, statusText: '故事准备好了。' })
-      } else {
+      } else if (result.video_task_id) {
         this.pollVideoTask()
+      } else {
+        this.simulateProgress()
       }
     } catch (err) {
       this.simulateProgress()
@@ -76,15 +95,16 @@ Page({
         const fallback = stages[result.status] || [result.progress || 72, '大圣还在忙活…']
         this.setData({
           progress: result.progress == null ? fallback[0] : result.progress,
-          statusText: result.status === 'completed' ? '故事准备好了。' : fallback[1],
-          videoUrl: result.video_url || this.data.videoUrl
+          statusText: result.status === 'completed' ? '故事准备好了。' : result.status === 'failed' ? '这条片子没生成好，先保留导演稿。' : fallback[1],
+          videoUrl: result.video_url || this.data.videoUrl,
+          failed: result.status === 'failed'
         })
-        if (result.status === 'completed') clearInterval(this.timer)
+        if (result.status === 'completed' || result.status === 'failed') clearInterval(this.timer)
       } catch (err) {
         clearInterval(this.timer)
         this.simulateProgress()
       }
-    }, 1600)
+    }, 2000)
   },
 
   simulateProgress() {
@@ -93,7 +113,7 @@ Page({
       [45, '正在想第一句怎么开口…'],
       [70, '正在安排桃园里的镜头…'],
       [90, '正在加一点大圣自己的小脾气…'],
-      [100, '故事准备好了。']
+      [100, '导演稿准备好了。']
     ]
     let i = 0
     clearInterval(this.timer)
