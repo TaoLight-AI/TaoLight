@@ -81,3 +81,7 @@
   const v14EnsureRows=ensureRows;ensureRows=async function(force=false){const rows=await v14EnsureRows(force);const latest=[...rows].sort((a,b)=>String(a.payload?.logDate||"").localeCompare(String(b.payload?.logDate||""))).at(-1)?.payload;renderDailyFeedback(latest);return rows};
   initInteractions();setTimeout(()=>ensureRows(),300);
 })();
+
+// Private body steward layer: loaded last so legacy accounts and records stay compatible.
+const stewardStyle=document.createElement("link");stewardStyle.rel="stylesheet";stewardStyle.href="./steward-v3.css?v=20260901-1";document.head.appendChild(stewardStyle);
+const stewardScript=document.createElement("script");stewardScript.src="./steward-v3.js?v=20260901-1";stewardScript.defer=true;stewardScript.async=false;document.body.appendChild(stewardScript);
