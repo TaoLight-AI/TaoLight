@@ -85,5 +85,5 @@
 // Private body steward layer: loaded last so legacy accounts and records stay compatible.
 const stewardStyle=document.createElement("link");stewardStyle.rel="stylesheet";stewardStyle.href="./steward-v3.css?v=20260902-2";document.head.appendChild(stewardStyle);
 const stewardScript=document.createElement("script");stewardScript.src="./steward-v3.js?v=20260902-2";stewardScript.defer=true;stewardScript.async=false;document.body.appendChild(stewardScript);
-const stewardV4Style=document.createElement("link");stewardV4Style.rel="stylesheet";stewardV4Style.href="./steward-v4.css?v=20260902-3";document.head.appendChild(stewardV4Style);
-const stewardV4Script=document.createElement("script");stewardV4Script.src="./steward-v4.js?v=20260902-3";stewardV4Script.defer=true;stewardV4Script.async=false;document.body.appendChild(stewardV4Script);
+const stewardV4Style=document.createElement("link");stewardV4Style.rel="stylesheet";stewardV4Style.href="./steward-v4.css?v=20260902-4";document.head.appendChild(stewardV4Style);
+const stewardV4Script=document.createElement("script");stewardV4Script.src="./steward-v4.js?v=20260902-4";stewardV4Script.defer=true;stewardV4Script.async=false;document.body.appendChild(stewardV4Script);
