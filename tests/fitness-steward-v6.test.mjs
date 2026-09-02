@@ -4,6 +4,7 @@ import vm from "node:vm";
 
 const source=fs.readFileSync(new URL("../docs/fitness-log/steward-v5.js",import.meta.url),"utf8");
 const css=fs.readFileSync(new URL("../docs/fitness-log/steward-v5.css",import.meta.url),"utf8");
+const nutritionCss=fs.readFileSync(new URL("../docs/fitness-log/nutrition-v7.css",import.meta.url),"utf8");
 const sw=fs.readFileSync(new URL("../docs/fitness-log/sw.js",import.meta.url),"utf8");
 const manifest=JSON.parse(fs.readFileSync(new URL("../docs/fitness-log/manifest.webmanifest",import.meta.url),"utf8"));
 
@@ -35,9 +36,16 @@ for(const marker of ["管家综合反馈","下一阶段唯一决定","mapLegacyR
   assert.ok(source.includes(marker),`缺少V6闭环：${marker}`);
 }
 for(const marker of ["v5-stage-ring","v5-six-dots","v5-service-list"])assert.ok(css.includes(marker),`缺少V6视觉：${marker}`);
+for(const marker of ["拍餐","analyze-meal","确认计入全天","nutritionDecision","nutritionHistoryCard","photoStored:false"]){
+  assert.ok(source.includes(marker),`缺少拍餐闭环：${marker}`);
+}
+for(const marker of ["v5-nutrition-gauge","v5-photo-button","v5-meal-result","repeat(4,1fr)"]){
+  assert.ok(nutritionCss.includes(marker),`缺少拍餐视觉：${marker}`);
+}
+assert.ok(fs.existsSync(new URL("../fitness-log/supabase/functions/analyze-meal/index.ts",import.meta.url)),"缺少餐食识别服务");
 for(const marker of ["periodicsync","notificationclick","SET_REMINDER"])assert.ok(sw.includes(marker),`缺少提醒能力：${marker}`);
 assert.equal(manifest.display,"standalone");
 assert.ok(fs.existsSync(new URL("../fitness-log/supabase/functions/huawei-health/index.ts",import.meta.url)));
 assert.ok(fs.existsSync(new URL("../fitness-log/supabase/functions/expert-service/index.ts",import.meta.url)));
 
-console.log("V6模拟验收通过：6次阶段反馈、疲劳减量、安全冻结、历史迁移、PWA提醒、四类服务状态。 ");
+console.log("V7模拟验收通过：V6闭环、常驻拍餐、AI识别、人工确认、全天累计、营养趋势与照片不留档。 ");
