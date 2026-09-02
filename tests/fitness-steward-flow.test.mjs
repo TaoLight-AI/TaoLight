@@ -15,6 +15,11 @@ function goalRoute(s){
   return{cta:"home",changesState:true};
 }
 
+function receipt(action,goal="增加肌肉"){
+  const quality=action.pain?"发现不适":action.outcome==="easy"?"轻松完成":action.outcome==="hard"?"完成偏吃力":"剂量正好";
+  return{content:action.decision,quality,goalMeaning:goal.includes("肌")?"有效刺激":"行动证据",next:action.pain?"冻结进阶":"明日预案",celebrate:!action.pain};
+}
+
 const personas=[
   ["首次用户",{profile:false},"onboarding"],
   ["数据过期用户",{profile:true,signalAgeHours:80},"signal"],
@@ -40,4 +45,14 @@ for(const state of [
   assert.notEqual(result.cta,"none","目标页出现死胡同");
 }
 
-console.log(`模拟用户路径通过：${personas.length}类日常状态 + 4类目标页状态，无死胡同。`);
+for(const action of [
+  {decision:"完成上肢A",outcome:"right"},
+  {decision:"完成精简训练",outcome:"hard"},
+  {decision:"暂停诱发不适的动作",outcome:"hard",pain:true}
+]){
+  const report=receipt(action);
+  for(const key of ["content","quality","goalMeaning","next"])assert.ok(report[key],`今日成绩单缺少${key}`);
+  if(action.pain)assert.equal(report.celebrate,false,"疼痛路径出现庆祝反馈");
+}
+
+console.log(`模拟用户路径通过：${personas.length}类日常状态 + 4类目标页状态 + 3类当日成绩单，无死胡同。`);
