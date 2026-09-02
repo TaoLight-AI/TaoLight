@@ -1,0 +1,43 @@
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import vm from "node:vm";
+
+const source=fs.readFileSync(new URL("../docs/fitness-log/steward-v5.js",import.meta.url),"utf8");
+const css=fs.readFileSync(new URL("../docs/fitness-log/steward-v5.css",import.meta.url),"utf8");
+const sw=fs.readFileSync(new URL("../docs/fitness-log/sw.js",import.meta.url),"utf8");
+const manifest=JSON.parse(fs.readFileSync(new URL("../docs/fitness-log/manifest.webmanifest",import.meta.url),"utf8"));
+
+const extract=(name,next)=>source.slice(source.indexOf(`function ${name}`),source.indexOf(`function ${next}`));
+const comparison=extract("comparisonFor","buildPhaseReport");
+const build=extract("buildPhaseReport","latestPhaseDecision");
+const make=(i,{quality="right",pain=false,readiness="normal",exercise="器械推胸",weight=40,reps=10,status="done"}={})=>({
+  id:`w-${i}`,date:`2026-08-${String(10+i).padStart(2,"0")}`,completedAt:`2026-08-${String(10+i).padStart(2,"0")}T12:00:00`,planId:i%3===0?"recovery":"upperA",title:i%3===0?"恢复":"上肢",status,readiness,sets:i%3===0?[{exerciseId:"walk",name:"轻松快走",quality:"right"}]:[{exerciseId:"press",name:exercise,weight,reps,quality,pain}]
+});
+const analyze=records=>{
+  const context={records,index:1,profile:{goal:"改善睡眠并增加肌肉"},services:{},result:null};
+  vm.runInNewContext(`${comparison}\n${build}\nresult=buildPhaseReport(records,index);`,context);
+  return context.result;
+};
+
+const stable=Array.from({length:6},(_,i)=>make(i+1,{weight:i===5?42.5:40,reps:10}));
+const stableReport=analyze(stable);
+assert.equal(stableReport.records.length,6);
+assert.ok(["hold","progress"].includes(stableReport.decision.code));
+assert.match(stableReport.goalEvidence,/不能声称睡眠已改善/);
+
+const tired=Array.from({length:6},(_,i)=>make(i+1,{quality:i<3?"hard":"right",readiness:i<2?"low":"normal"}));
+assert.equal(analyze(tired).decision.code,"reduce","高疲劳阶段没有自动减量");
+
+const unsafe=Array.from({length:6},(_,i)=>make(i+1,{pain:i===4,status:i===4?"stopped":"done"}));
+assert.equal(analyze(unsafe).decision.code,"review","安全信号没有冻结自动进阶");
+
+for(const marker of ["管家综合反馈","下一阶段唯一决定","mapLegacyRows","离线主动提醒","huawei-health","真人专家与响应SLA"]){
+  assert.ok(source.includes(marker),`缺少V6闭环：${marker}`);
+}
+for(const marker of ["v5-stage-ring","v5-six-dots","v5-service-list"])assert.ok(css.includes(marker),`缺少V6视觉：${marker}`);
+for(const marker of ["periodicsync","notificationclick","SET_REMINDER"])assert.ok(sw.includes(marker),`缺少提醒能力：${marker}`);
+assert.equal(manifest.display,"standalone");
+assert.ok(fs.existsSync(new URL("../fitness-log/supabase/functions/huawei-health/index.ts",import.meta.url)));
+assert.ok(fs.existsSync(new URL("../fitness-log/supabase/functions/expert-service/index.ts",import.meta.url)));
+
+console.log("V6模拟验收通过：6次阶段反馈、疲劳减量、安全冻结、历史迁移、PWA提醒、四类服务状态。 ");
