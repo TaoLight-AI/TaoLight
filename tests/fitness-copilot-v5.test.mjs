@@ -27,7 +27,7 @@ for(const [name,state,screen] of [
 ])assert.equal(route(state),screen,`${name}路由错误`);
 
 const source=fs.readFileSync(new URL("../docs/fitness-log/steward-v5.js",import.meta.url),"utf8");
-for(const marker of ["记住上次","只有20分钟","器械被占","语音填重量次数","疼痛或异常","今日身体成绩单","离线主动提醒"]){
+for(const marker of ["记住上次","只有20分钟","器械被占","语音填重量次数","今天到这里","疼痛或异常","今日身体成绩单","离线主动提醒"]){
   assert.ok(source.includes(marker),`V5缺少关键闭环：${marker}`);
 }
-console.log("V5模拟验收通过：7天计划、3种剂量调整、6类用户状态、7项刚需闭环。 ");
+console.log("V5模拟验收通过：7天计划、3种剂量调整、6类用户状态、8项刚需闭环。 ");
