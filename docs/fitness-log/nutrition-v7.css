@@ -37,8 +37,9 @@
   body.steward-v5{overflow-x:hidden;background:#f4f8f5}
   #stewardV5{width:100%;overflow-x:hidden}
   .v5-shell{width:100%;max-width:none;gap:9px;margin:0;padding:0 0 calc(84px + env(safe-area-inset-bottom))}
-  .v5-header{box-sizing:border-box;width:100%;padding:14px 16px 9px;background:linear-gradient(180deg,#edf8f2 0,#f4f8f5 100%)}
-  .v5-header h1{font-size:clamp(21px,6vw,27px)}
+  .v5-header{box-sizing:border-box;width:100%;gap:9px;padding:14px 16px 9px;background:linear-gradient(180deg,#edf8f2 0,#f4f8f5 100%)}
+  .v5-header>div{min-width:0}
+  .v5-header h1{font-size:clamp(18px,5vw,25px);letter-spacing:0}
   .v5-card{width:100%;margin:0;border-right:0;border-left:0;border-radius:0;box-shadow:0 1px 0 rgba(31,79,69,.08),inset 0 0 0 1px #fff}
   .v5-card:before{left:16px}
   .v5-peek{box-sizing:border-box;width:100%;padding:8px 16px}
