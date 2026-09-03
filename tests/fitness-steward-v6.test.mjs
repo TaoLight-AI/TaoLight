@@ -39,9 +39,13 @@ for(const marker of ["v5-stage-ring","v5-six-dots","v5-service-list"])assert.ok(
 for(const marker of ["拍餐","analyze-meal","确认计入全天","nutritionDecision","nutritionHistoryCard","photoStored:false"]){
   assert.ok(source.includes(marker),`缺少拍餐闭环：${marker}`);
 }
+for(const marker of ["按修改重新计算","recalculateMeal","requestMealAnalysis","corrected-text","用户校正后的餐食"]){
+  assert.ok(source.includes(marker),`缺少餐食文字纠错重算：${marker}`);
+}
 for(const marker of ["v5-nutrition-gauge","v5-photo-button","v5-meal-result","repeat(4,1fr)"]){
   assert.ok(nutritionCss.includes(marker),`缺少拍餐视觉：${marker}`);
 }
+assert.ok(nutritionCss.includes("v5-meal-result-actions"),"缺少纠错重算操作区的手机适配");
 for(const marker of ["@media(max-width:620px)","width:100%;max-width:none","env(safe-area-inset-bottom)","border-radius:18px 18px 0 0"]){
   assert.ok(nutritionCss.includes(marker),`缺少手机全宽适配：${marker}`);
 }
@@ -54,4 +58,4 @@ assert.equal(manifest.display,"standalone");
 assert.ok(fs.existsSync(new URL("../fitness-log/supabase/functions/huawei-health/index.ts",import.meta.url)));
 assert.ok(fs.existsSync(new URL("../fitness-log/supabase/functions/expert-service/index.ts",import.meta.url)));
 
-console.log("V7模拟验收通过：V6闭环、常驻拍餐、AI识别、人工确认、全天累计、营养趋势与照片不留档。 ");
+console.log("V7模拟验收通过：V6闭环、常驻拍餐、AI识别、文字纠错重算、人工确认、全天累计、营养趋势与照片不留档。 ");
