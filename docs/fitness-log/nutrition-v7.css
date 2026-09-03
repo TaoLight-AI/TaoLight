@@ -34,9 +34,13 @@
 @media(max-width:430px){.v5-nutrition-gauge{grid-template-columns:106px 1fr;gap:13px}.v5-nutrition-gauge>div{width:100px;height:100px}.v5-nutrition-gauge>div b{font-size:29px}.v5-meal-tabs{gap:4px}.v5-meal-tabs button{min-height:72px}.v5-meal-tabs b{font-size:14px}.v5-meal-actions{grid-template-columns:1fr}.v5-meal-numbers{grid-template-columns:1fr 1fr}}
 @media(max-width:350px){.v5-nutrition-gauge{grid-template-columns:1fr}.v5-nutrition-gauge>div{margin:auto}.v5-meal-tabs{grid-template-columns:1fr 1fr}.v5-meal-numbers{grid-template-columns:1fr}}
 @media(max-width:620px){
-  body.steward-v5{overflow-x:hidden;background:#f4f8f5}
-  #stewardV5{width:100%;overflow-x:hidden}
+  html{width:100%;overflow-x:clip;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  body.steward-v5{width:100%;overflow-x:clip;background:#f4f8f5}
+  .steward-v5 .shell,.steward-v5 #logForm,.steward-v5 #formView{width:100%;max-width:none;margin:0;padding:0}
+  #stewardV5{width:100%;max-width:100%;overflow:visible}
   .v5-shell{width:100%;max-width:none;gap:9px;margin:0;padding:0 0 calc(84px + env(safe-area-inset-bottom))}
+  .v5-shell>*,.v5-card>*,.v5-report-head>*,.v5-evidence-row>*,.v5-service-list>button>*{min-width:0}
+  .v5-card{overflow:hidden;overflow-wrap:anywhere;word-break:break-word}
   .v5-header{box-sizing:border-box;width:100%;gap:9px;padding:14px 16px 9px;background:linear-gradient(180deg,#edf8f2 0,#f4f8f5 100%)}
   .v5-header>div{min-width:0}
   .v5-header h1{font-size:clamp(18px,5vw,25px);letter-spacing:0}
@@ -44,7 +48,8 @@
   .v5-card:before{left:16px}
   .v5-peek{box-sizing:border-box;width:100%;padding:8px 16px}
   .v5-nav{left:0;bottom:0;box-sizing:border-box;width:100%;max-width:none;padding:6px 8px calc(6px + env(safe-area-inset-bottom));border-right:0;border-bottom:0;border-left:0;border-radius:18px 18px 0 0;transform:none}
-  .v5-nav button{min-height:55px}
+  .v5-nav button{min-width:0;min-height:50px;font-size:12px}
+  .v5-nav i{font-size:17px}
   .v5-modal{padding:0}
   .v5-sheet{width:100%;max-height:94dvh;border-right:0;border-bottom:0;border-left:0;border-radius:25px 25px 0 0;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
   .v5-toast{bottom:calc(78px + env(safe-area-inset-bottom))}
@@ -52,4 +57,24 @@
   .v5-meal-capture{padding:17px 15px}
   .v5-photo-button{min-height:78px}
   .v5-meal-actions button{min-height:56px}
+  .v5-report-head{grid-template-columns:78px minmax(0,1fr);gap:12px}
+  .v5-stage-ring{width:76px;height:76px}
+  .v5-stage-ring b{font-size:28px}
+  .v5-report-head small{display:block;max-width:100%;font-size:12px;line-height:1.45;white-space:normal}
+  .v5-report-head h2{font-size:22px;line-height:1.25}
+  .v5-report-head em{width:fit-content;max-width:100%;font-size:11px}
+  .v5-evidence-row{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  .v5-evidence-row section{min-width:0;padding:12px 4px}
+  .v5-evidence-row b{font-size:23px}
+  .v5-evidence-row span{font-size:12px;line-height:1.35}
+  .v5-coach-verdict{padding:16px 14px}
+  .v5-coach-verdict h3{font-size:20px;line-height:1.45}
+  .v5-coach-verdict p,.v5-compare small,.v5-next-stage small{font-size:14px;line-height:1.65}
+  .v5-compare,.v5-next-stage{padding:14px}
+  .v5-compare b,.v5-next-stage b{font-size:16px}
+  .v5-stage-pending{grid-template-columns:minmax(0,1fr) auto}
+  .v5-stage-pending .v5-six-dots{grid-column:1/-1;grid-row:2}
+  .v5-volume-chart{max-width:100%;overflow:hidden}
+  .v5-service-list>button{grid-template-columns:42px minmax(0,1fr)}
+  .v5-service-list>button>em{grid-column:2;width:fit-content;max-width:100%}
 }
