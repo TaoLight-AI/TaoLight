@@ -20,8 +20,9 @@ q("#svProfileModal")?.remove();
 q(".v4-onboarding")?.remove();
 if(typeof showFeedback==="function")showFeedback=()=>{};
 document.body.classList.add("steward-v5");
-document.title="奢华健身管家";
-q(".brand")&&(q(".brand").textContent="奢华健身管家");
+document.title="健身大脑｜拥有自律，生活治愈";
+q(".brand")&&(q(".brand").textContent="健身大脑");
+q('meta[name="theme-color"]')?.setAttribute("content","#00A7A0");
 new MutationObserver(()=>{q("#feedbackModal")?.remove();q("#svProfileModal")?.remove();q(".v4-onboarding")?.remove()}).observe(document.body,{childList:true,subtree:true});
 
 const app=document.createElement("section");
@@ -29,29 +30,41 @@ app.id="stewardV5";
 q("#formView").prepend(app);
 
 const plans={
-  upperA:{title:"上肢 · 推拉基础",short:"上肢A",minutes:45,exercises:[
-    {id:"chest-press",name:"器械推胸",muscle:"胸·肱三头",alt:"绳索站姿推胸"},
-    {id:"seated-row",name:"坐姿划船",muscle:"背·肱二头",alt:"单臂绳索划船"},
-    {id:"lat-pull",name:"高位下拉",muscle:"背阔肌",alt:"直臂下压"},
-    {id:"cable-curl",name:"绳索弯举",muscle:"肱二头",alt:"器械弯举"}
+  upperA:{title:"上肢 A · 胸背基础",short:"上肢A",minutes:70,exercises:[
+    {id:"lat-pull",name:"Real Leader 中立握高位下拉",muscle:"背阔肌·肱二头",alt:"双滑轮跪姿下拉",sets:3,startWeight:22.5,setup:"大腿垫从最高位向下2—3格"},
+    {id:"chest-press",name:"Newoolf 坐姿推胸",muscle:"胸大肌·肱三头",alt:"双滑轮坐姿推胸",sets:3,startWeight:17.5,setup:"手柄对齐胸中部"},
+    {id:"seated-row",name:"低位滑轮坐姿划船",muscle:"中背·背阔肌",alt:"胸托划船机",sets:3,startWeight:22.5,setup:"膝微屈，躯干不后仰"},
+    {id:"lateral-raise-a",name:"Real Leader 器械侧平举",muscle:"三角肌中束",alt:"轻哑铃侧平举",sets:3,startWeight:2.5,setup:"空臂起；转轴对肩峰"},
+    {id:"reverse-fly-a",name:"反向蝴蝶机",muscle:"三角肌后束·菱形肌",alt:"双滑轮反向飞鸟",sets:2,startWeight:12.5,setup:"肩轴与机器转轴同高"},
+    {id:"triceps-a",name:"双滑轮绳索下压",muscle:"肱三头肌",alt:"直杆下压",sets:3,startWeight:12.5,setup:"滑轮最高位，肘贴躯干"},
+    {id:"cable-curl",name:"双滑轮绳索弯举",muscle:"肱二头肌",alt:"靠背哑铃弯举",sets:2,startWeight:10,setup:"滑轮最低位，肩不前移"}
   ]},
-  lowerA:{title:"下肢 · 稳定基础",short:"下肢A",minutes:45,exercises:[
-    {id:"leg-press",name:"腿举",muscle:"股四头·臀",alt:"靠墙静蹲"},
-    {id:"leg-curl",name:"坐姿腿弯举",muscle:"腘绳肌",alt:"卧姿腿弯举"},
-    {id:"hip-thrust",name:"臀推机",muscle:"臀肌",alt:"器械臀后伸"},
-    {id:"calf-raise",name:"坐姿提踵",muscle:"小腿",alt:"站姿提踵"}
+  lowerA:{title:"下肢 A · 股四头与髋",short:"下肢A",minutes:70,exercises:[
+    {id:"leg-press",name:"45°腿举（限制幅度）",muscle:"股四头·臀大肌",alt:"坐姿腿屈伸",sets:3,startWeight:0,setup:"空车起；腰骶不卷起"},
+    {id:"leg-curl",name:"坐姿腿弯举",muscle:"腘绳肌",alt:"俯卧腿弯举",sets:3,startWeight:5,setup:"空臂或每侧5kg"},
+    {id:"leg-extension",name:"坐姿腿屈伸",muscle:"股四头肌",alt:"轻重量腿举",sets:3,startWeight:17.5,setup:"膝轴对齐机器转轴"},
+    {id:"hip-abduction",name:"髋外展机",muscle:"臀中肌",alt:"弹力带侧步",sets:3,startWeight:22.5,setup:"中小开合，腰背贴靠背"},
+    {id:"hip-adduction",name:"髋内收机",muscle:"内收肌群",alt:"侧卧内收",sets:2,startWeight:22.5,setup:"不追最大开合幅度"},
+    {id:"pallof",name:"双滑轮 Pallof 抗旋转推",muscle:"腹横肌·腹斜肌",alt:"Dead Bug",sets:2,startWeight:5,setup:"滑轮胸口高度"},
+    {id:"lateral-raise-light",name:"器械侧平举（轻量）",muscle:"三角肌中束",alt:"靠墙侧平举",sets:2,startWeight:2.5,setup:"空臂起，不耸肩"}
   ]},
-  upperB:{title:"上肢 · 姿态与力量",short:"上肢B",minutes:45,exercises:[
-    {id:"incline-press",name:"上斜器械推胸",muscle:"上胸·肱三头",alt:"上斜俯卧撑"},
-    {id:"supported-row",name:"胸托划船",muscle:"上背",alt:"坐姿绳索划船"},
-    {id:"face-pull",name:"绳索面拉",muscle:"后束·肩胛",alt:"反向飞鸟机"},
-    {id:"triceps",name:"绳索下压",muscle:"肱三头",alt:"器械臂屈伸"}
+  upperB:{title:"上肢 B · 背肩与手臂",short:"上肢B",minutes:70,exercises:[
+    {id:"chest-press-b",name:"Newoolf 坐姿推胸",muscle:"胸大肌·肱三头",alt:"双滑轮坐姿推胸",sets:3,startWeight:17.5,setup:"手柄对齐胸中部"},
+    {id:"seated-row-b",name:"低位滑轮坐姿划船",muscle:"中背·背阔肌",alt:"胸托划船机",sets:3,startWeight:22.5,setup:"躯干摆动不超过5°"},
+    {id:"lat-pull-b",name:"窄/中立握高位下拉",muscle:"背阔肌·肱二头",alt:"单臂滑轮下拉",sets:3,startWeight:22.5,setup:"伸臂不耸肩"},
+    {id:"reverse-fly-b",name:"反向蝴蝶机",muscle:"三角肌后束·菱形肌",alt:"双滑轮反向飞鸟",sets:3,startWeight:12.5,setup:"肩轴对齐机器转轴"},
+    {id:"lateral-raise-b",name:"器械侧平举",muscle:"三角肌中束",alt:"轻哑铃侧平举",sets:3,startWeight:2.5,setup:"垫接触上臂而非肘尖"},
+    {id:"triceps-b",name:"双滑轮绳索下压",muscle:"肱三头肌",alt:"直杆下压",sets:3,startWeight:12.5,setup:"滑轮最高位"},
+    {id:"hammer-curl",name:"靠背哑铃锤式弯举",muscle:"肱肌·肱二头",alt:"绳索锤式弯举",sets:2,startWeight:4,setup:"每手4—5kg，靠背固定"}
   ]},
-  lowerB:{title:"下肢 · 关节友好",short:"下肢B",minutes:45,exercises:[
-    {id:"leg-extension",name:"腿屈伸",muscle:"股四头",alt:"低台阶踏步"},
-    {id:"leg-curl-b",name:"坐姿腿弯举",muscle:"腘绳肌",alt:"卧姿腿弯举"},
-    {id:"hip-abduction",name:"髋外展机",muscle:"臀中肌",alt:"弹力带侧步"},
-    {id:"calf-raise-b",name:"坐姿提踵",muscle:"小腿",alt:"站姿提踵"}
+  lowerB:{title:"下肢 B · 后侧与比例",short:"下肢B",minutes:70,exercises:[
+    {id:"leg-curl-b",name:"坐姿腿弯举",muscle:"腘绳肌",alt:"俯卧腿弯举",sets:3,startWeight:5,setup:"空臂或每侧5kg"},
+    {id:"leg-extension-b",name:"坐姿腿屈伸",muscle:"股四头肌",alt:"轻重量腿举",sets:3,startWeight:17.5,setup:"踝垫位于踝上方"},
+    {id:"leg-press-b",name:"45°腿举（限制幅度）",muscle:"股四头·臀大肌",alt:"坐姿腿屈伸",sets:2,startWeight:0,setup:"空车起；腰骶不卷起"},
+    {id:"chest-press-c",name:"Newoolf 坐姿推胸",muscle:"胸大肌·肱三头",alt:"双滑轮坐姿推胸",sets:2,startWeight:17.5,setup:"起始位不过度后伸"},
+    {id:"lat-pull-c",name:"Real Leader 高位下拉",muscle:"背阔肌·肱二头",alt:"双滑轮跪姿下拉",sets:2,startWeight:22.5,setup:"全程持续呼吸"},
+    {id:"lateral-raise-c",name:"器械侧平举",muscle:"三角肌中束",alt:"轻哑铃侧平举",sets:3,startWeight:2.5,setup:"空臂起，不耸肩"},
+    {id:"arm-pair",name:"绳索下压＋绳索弯举",muscle:"肱三头·肱二头",alt:"靠背哑铃弯举",sets:2,startWeight:10,setup:"两项间休息45—60秒"}
   ]},
   recovery:{title:"恢复日 · 为下次蓄力",short:"恢复",minutes:30,exercises:[]}
 };
@@ -70,8 +83,9 @@ function completed(){
   return [...local,...legacyWorkouts.filter(x=>!seen.has(`${x.date}|${x.planId}`))].sort((a,b)=>new Date(b.completedAt||b.startedAt||b.date)-new Date(a.completedAt||a.startedAt||a.date));
 }
 function previousSet(exerciseId,excludeId){for(const w of completed()){if(w.id===excludeId)continue;const found=[...(w.sets||[])].reverse().find(s=>s.exerciseId===exerciseId&&!s.pain);if(found)return found}return null}
-function suggest(exerciseId,excludeId){const last=previousSet(exerciseId,excludeId);if(!last)return{weight:null,reps:10,why:"首次校准：选择能做10次、仍有约3次余力的轻重量"};if(last.quality==="easy"&&last.reps>=10)return{weight:roundLoad(last.weight*1.05)||last.weight,reps:8,why:"上次余力较多，小幅进阶后从8次开始"};if(last.quality==="hard")return{weight:roundLoad(last.weight*.9),reps:Math.max(6,last.reps-1),why:"上次偏吃力，本次自动减量约10%"};return{weight:last.weight,reps:Math.min(12,last.reps+1),why:"沿用上次重量，只多争取1次"}}
-function todayMode(){const r=todaysReadiness(),decision=latestPhaseDecision();if(r?.level==="low")return{label:"今日精简",factor:.7,note:"今天每个动作只做1组，不补课、不力竭"};if(["reduce","review"].includes(decision?.code))return{label:"阶段减量",factor:.7,note:"最近6次显示需要先降疲劳，本次每个动作1组"};return{label:"正常剂量",factor:1,note:"每组保留2—3次余力，完成比练狠重要"}}
+function exerciseSpec(exerciseId){for(const plan of Object.values(plans)){const match=plan.exercises.find(e=>e.id===exerciseId);if(match)return match}return null}
+function suggest(exerciseId,excludeId){const last=previousSet(exerciseId,excludeId),spec=exerciseSpec(exerciseId);if(!last)return{weight:spec?.startWeight??null,reps:10,why:`建议起始重量 ${spec?.startWeight??"自重/空车"}kg；${spec?.setup||"先校准座椅"}。以能做10次且仍有3—4次余力为准`};if(last.quality==="easy"&&last.reps>=10)return{weight:roundLoad(last.weight*1.05)||last.weight,reps:8,why:"上次余力较多，小幅进阶后从8次开始"};if(last.quality==="hard")return{weight:roundLoad(last.weight*.9),reps:Math.max(6,last.reps-1),why:"上次偏吃力，本次自动减量约10%"};return{weight:last.weight,reps:Math.min(12,last.reps+1),why:"沿用上次重量，只多争取1次"}}
+function todayMode(){const r=todaysReadiness(),decision=latestPhaseDecision();if(r?.level==="low")return{label:"今日精简",factor:.7,note:"今天每个动作只做1组，不补课、不力竭"};if(["reduce","review"].includes(decision?.code))return{label:"阶段减量",factor:.7,note:"最近6次显示需要先降疲劳，本次每个动作1组"};return{label:"正常剂量",factor:1,note:"每组保留3—4次余力，持续呼吸，不练到力竭"}}
 function safetyText(){if(profile.risks?.eye)return"眼部边界已锁定：不憋气、不力竭、不做剧烈震动动作";if(profile.risks?.joint)return"关节边界已锁定：疼痛不是训练刺激，出现不适立即停止";return"安全边界：全程能顺畅呼吸，异常疼痛立即停止"}
 function totalTargetSets(w){return w.exercises.reduce((n,e)=>n+e.targetSets,0)}
 function currentExercise(w){return w.exercises[w.currentExercise]}
@@ -109,7 +123,7 @@ function nutritionMini(){
 }
 
 function header(sub="今天不用想计划"){
-  return`<header class="v5-header"><div><small>${esc(profile.name||"你好")} · ${new Date().toLocaleDateString("zh-CN",{month:"long",day:"numeric",weekday:"short"})}</small><h1>你比想象中的更“强大”</h1><p>${sub}</p></div><button class="v5-profile-button" data-view="profile" aria-label="身体档案">澄</button></header>`
+  return`<header class="v5-header"><div><small>${esc(profile.name||"你好")} · ${new Date().toLocaleDateString("zh-CN",{month:"long",day:"numeric",weekday:"short"})}</small><h1>拥有自律，生活治愈</h1><p>${sub}</p></div><button class="v5-profile-button" data-view="profile" aria-label="身体档案">澄</button></header>`
 }
 function nav(){const mealCount=nutritionSummary().count;return`<nav class="v5-nav"><button data-view="today" class="${view==="today"?"active":""}"><i>◉</i>今天</button><button data-view="nutrition" class="v5-meal-nav ${view==="nutrition"?"active":""}"><i>▣</i>拍餐${mealCount?`<em>${mealCount}</em>`:""}</button><button data-view="progress" class="${view==="progress"?"active":""}"><i>↗</i>进步</button><button data-view="profile" class="${view==="profile"?"active":""}"><i>◇</i>档案</button></nav>`}
 function safetyStrip(type="safe"){return`<div class="v5-safety ${type}"><i>${type==="stop"?"!":"盾"}</i><span>${safetyText()}</span></div>`}
@@ -121,7 +135,7 @@ function renderSafetyStop(message="今天不进入训练"){
   return`${header("安全比完成计划重要")}<article class="v5-card v5-stop"><div class="v5-stop-mark">!</div><small>管家已停止进阶</small><h2>${message}</h2><p>当前信号需要先确认安全边界。请停止运动；胸痛、晕厥、明显呼吸困难或突发视力变化应及时线下就医。</p>${safetyStrip("stop")}<button class="v5-secondary" data-view="profile">查看已锁定边界</button></article>`
 }
 function renderPreview(plan){
-  const mode=todayMode(),sets=Math.round(plan.exercises.length*2*mode.factor),next=plan.exercises[0],first=suggest(next.id);
+  const mode=todayMode(),sets=mode.factor<1?plan.exercises.length:plan.exercises.reduce((n,e)=>n+(e.sets||2),0),next=plan.exercises[0],first=suggest(next.id);
   return`${header("管家已经排好，到了就开始")}<article class="v5-card v5-preview"><div class="v5-plan-badge"><i>✓</i><span>已核对身体状态</span><b>${mode.label}</b></div><small>今日唯一训练</small><h2>${plan.title}</h2><div class="v5-plan-numbers"><div><b>${plan.exercises.length}</b><span>动作</span></div><div><b>${sets}</b><span>工作组</span></div><div><b>${mode.factor<1?25:plan.minutes}</b><span>分钟</span></div></div>${safetyStrip()}<div class="v5-first-action"><span>开始后第一件事</span><b>${next.name}</b><small>${first.why}</small></div><button class="v5-primary" data-start="full">开始今天训练</button>${mode.factor===1?'<button class="v5-secondary" data-start="short">今天只有20分钟</button>':""}</article>`
 }
 function renderRecovery(){
@@ -130,7 +144,7 @@ function renderRecovery(){
 }
 function renderCockpit(w){
   const e=currentExercise(w),done=w.sets.length,total=totalTargetSets(w),within=w.sets.filter(s=>s.exerciseIndex===w.currentExercise).length,target=suggest(e.id,w.id),last=latestCurrentSet(w,e);let weight=w.draftWeight??(last?.weight??target.weight),reps=w.draftReps??(last?.quality==="easy"?Math.min(12,last.reps+1):last?.quality==="hard"?Math.max(6,last.reps-1):target.reps);if(last?.quality==="hard"&&w.draftWeight==null)weight=roundLoad(last.weight*.9);const pct=Math.round(done/total*100),rest=w.restUntil?Math.max(0,Math.ceil((w.restUntil-Date.now())/1000)):0;
-  return`${header(`训练进行中 · ${done}/${total}组`)}<div class="v5-progress"><i style="width:${pct}%"></i></div><article class="v5-card v5-cockpit"><div class="v5-cockpit-top"><div><small>动作 ${w.currentExercise+1}/${w.exercises.length} · 第${within+1}/${e.targetSets}组</small><h2>${esc(e.name)}</h2><span>${esc(e.muscle)}</span></div><div class="v5-movement"><b>${String(w.currentExercise+1).padStart(2,"0")}</b><i></i></div></div><div class="v5-prescription"><span>这一组</span><div class="v5-target"><section><small>重量 kg</small><div><button data-weight="-2.5">−</button><input id="v5Weight" type="number" min="0" step="2.5" value="${weight??""}" placeholder="首次填写"><button data-weight="2.5">＋</button></div></section><section><small>次数</small><div><button data-reps="-1">−</button><input id="v5Reps" type="number" min="1" max="30" value="${reps}"><button data-reps="1">＋</button></div></section></div><p>${last?last.quality==="hard"?"上一组偏吃力，重量已降低约10%":"沿用上一组，只根据余力微调":"管家建议："+target.why}</p></div>${rest?`<div class="v5-rest"><span>休息</span><b data-rest>${Math.floor(rest/60)}:${String(rest%60).padStart(2,"0")}</b><button data-skip-rest>跳过</button></div>`:""}<div class="v5-set-actions"><button data-quality="right" class="v5-primary"><b>正好 · 完成本组</b><span>还可再做2—3次</span></button><button data-quality="easy"><b>偏轻</b><span>余力很多</span></button><button data-quality="hard"><b>偏重</b><span>勉强完成</span></button></div><div class="v5-exceptions"><button data-swap>器械被占</button><button data-voice>语音填重量次数</button><button data-finish-early>今天到这里</button><button data-pain>疼痛或异常</button></div>${safetyStrip()}</article>`
+  return`${header(`训练进行中 · ${done}/${total}组`)}<div class="v5-progress"><i style="width:${pct}%"></i></div><article class="v5-card v5-cockpit"><div class="v5-cockpit-top"><div><small>动作 ${w.currentExercise+1}/${w.exercises.length} · 第${within+1}/${e.targetSets}组</small><h2>${esc(e.name)}</h2><span>${esc(e.muscle)}</span></div><div class="v5-movement"><b>${String(w.currentExercise+1).padStart(2,"0")}</b><i></i></div></div><div class="v5-machine-setup"><b>器械设置</b><span>${esc(e.setup||"先用轻重量校准座椅与活动范围")}</span></div><div class="v5-prescription"><span>这一组</span><div class="v5-target"><section><small>重量 kg</small><div><button data-weight="-2.5">−</button><input id="v5Weight" type="number" min="0" step="2.5" value="${weight??""}" placeholder="首次填写"><button data-weight="2.5">＋</button></div></section><section><small>次数</small><div><button data-reps="-1">−</button><input id="v5Reps" type="number" min="1" max="30" value="${reps}"><button data-reps="1">＋</button></div></section></div><p>${last?last.quality==="hard"?"上一组偏吃力，重量已降低约10%":"沿用上一组，只根据余力微调":"管家建议："+target.why}</p></div>${rest?`<div class="v5-rest"><span>休息</span><b data-rest>${Math.floor(rest/60)}:${String(rest%60).padStart(2,"0")}</b><button data-skip-rest>跳过</button></div>`:""}<div class="v5-set-actions"><button data-quality="right" class="v5-primary"><b>正好 · 完成本组</b><span>还可再做3—4次</span></button><button data-quality="easy"><b>偏轻</b><span>余力很多</span></button><button data-quality="hard"><b>偏重</b><span>勉强完成</span></button></div><div class="v5-exceptions"><button data-swap>器械被占</button><button data-voice>语音填重量次数</button><button data-finish-early>今天到这里</button><button data-pain>疼痛或异常</button></div>${safetyStrip()}</article>`
 }
 function workoutMetrics(w){const sets=w.sets||[],weighted=sets.filter(s=>s.weight>0),volume=Math.round(weighted.reduce((n,s)=>n+s.weight*s.reps,0)),effective=sets.filter(s=>!s.pain&&s.quality!=="hard").length,previous=completed().find(x=>x.id!==w.id&&x.planId===w.planId),previousVolume=previous?Math.round((previous.sets||[]).reduce((n,s)=>n+(s.weight||0)*(s.reps||0),0)):0;return{sets:sets.length,effective,volume,previousVolume,change:previousVolume?Math.round((volume-previousVolume)/previousVolume*100):null}}
 function chronologicalCompleted(){return completed().slice().sort((a,b)=>new Date(a.completedAt||a.startedAt||a.date)-new Date(b.completedAt||b.startedAt||b.date))}
@@ -186,13 +200,14 @@ function serviceRows(){
   const permission=typeof Notification!=="undefined"?Notification.permission:"unsupported",reminder=services.reminder?.enabled&&permission==="granted",aiLast=Object.values(phaseAI).sort((a,b)=>String(b.at).localeCompare(String(a.at)))[0],huawei=services.huawei?.connected,expert=services.expert?.enabled;
   return`<div class="v5-service-list"><button data-reminder><i>铃</i><span><b>离线主动提醒</b><small>${reminder?`${services.reminder.background?"后台尽力提醒":"应用打开时提醒"} · ${services.reminder.time||"18:30"}`:permission==="denied"?"系统权限已关闭":"点击一次设置训练时段"}</small></span><em>${reminder?(services.reminder.background?"后台":"前台"):"设置"}</em></button><button data-huawei><i>表</i><span><b>华为运动健康</b><small>${huawei?`已同步 · ${services.huawei.lastSync||"刚刚"}`:"接入层已准备 · 等待开发者授权"}</small></span><em>${huawei?"已连接":"检测"}</em></button><button data-ai-review><i>AI</i><span><b>服务端持续分析</b><small>${aiLast?`最近复核 ${new Date(aiLast.at).toLocaleDateString("zh-CN")}`:"6次记录后自动请求复核"}</small></span><em>${aiLast?"在线":"检测"}</em></button><button data-expert><i>人</i><span><b>真人专家</b><small>${expert?"教练24小时 · 医疗红旗不等待SLA":"响应流程已建 · 尚未配置服务席位"}</small></span><em>${expert?"已开通":"边界"}</em></button></div>`;
 }
-function renderProfile(){const risks=[profile.risks?.eye&&"眼部保护",profile.risks?.heart&&"心血管信号",profile.risks?.joint&&"关节/腰背",profile.risks?.doctor&&"医生运动限制"].filter(Boolean);return`${header("只保留会改变训练决定的信息")}<article class="v5-card v5-profile"><div class="v5-person"><i>澄</i><section><span>90天唯一目标</span><h2>${esc(profile.goal||"尚未设置")}</h2><b>${esc(profile.name||"未设置称呼")}${currentWeight()?` · ${currentWeight()}kg`:""}</b></section></div><div class="v5-boundaries"><span>安全边界</span>${risks.length?risks.map(x=>`<b>${x}</b>`).join(""):'<b>暂未记录特殊限制</b>'}</div><button class="v5-secondary" data-edit>更新档案</button></article><article class="v5-card v5-services"><small>管家服务</small><h2>数据进来，行动必须改变</h2>${serviceRows()}<p class="v5-honest">每项都显示真实运行状态；没有授权、服务端密钥或真人席位时，不伪装成已上线。</p></article>`}
+function planPoster(){const days=[["周一",plans.upperA],["周二",plans.lowerA],["周四",plans.upperB],["周五",plans.lowerB]];return`<article class="v5-card v5-plan-poster"><div><small>帝豪斯雅颂居 · 12周计划</small><h2>新版四日器械训练</h2><p>周一、二、四、五，每次约70分钟。展开训练日可核对器械、组次、起始重量和主要发力肌群。</p></div><div class="v5-plan-days">${days.map(([day,plan],index)=>`<details ${index===0?"open":""}><summary><b>${day} · ${plan.short}</b><span>${plan.exercises.length}个动作 · ${plan.minutes}分钟</span></summary><ol>${plan.exercises.map(e=>`<li><div><b>${esc(e.name)}</b><span>${esc(e.muscle)}</span></div><small>${e.sets}组 × 10—15次 · 起始 ${e.startWeight||"空车"}${e.startWeight?"kg":""}<br>${esc(e.setup)}</small></li>`).join("")}</ol></details>`).join("")}</div></article>`}
+function renderProfile(){const risks=[profile.risks?.eye&&"眼部保护",profile.risks?.heart&&"心血管信号",profile.risks?.joint&&"关节/腰背",profile.risks?.doctor&&"医生运动限制"].filter(Boolean);return`${header("只保留会改变训练决定的信息")}<article class="v5-card v5-profile"><div class="v5-person"><i>澄</i><section><span>90天唯一目标</span><h2>${esc(profile.goal||"穿衣更有型：优先增加肩、背、胸和手臂比例")}</h2><b>${esc(profile.name||"健身用户")}${currentWeight()?` · ${currentWeight()}kg`:""}</b></section></div><div class="v5-boundaries"><span>安全边界</span>${risks.length?risks.map(x=>`<b>${x}</b>`).join(""):'<b>持续呼吸 · RIR 3—4 · 禁止冲击与力竭</b>'}</div><button class="v5-secondary" data-edit>更新档案</button></article>${planPoster()}<article class="v5-card v5-services"><small>管家服务</small><h2>数据进来，行动必须改变</h2>${serviceRows()}<p class="v5-honest">每项都显示真实运行状态；没有授权、服务端密钥或真人席位时，不伪装成已上线。</p></article>`}
 
 function renderToday(){const active=activeWorkout(),done=todaysWorkout(),plan=planForDate();let core;if(active)core=renderCockpit(active);else if(done)core=renderReceipt(done);else if(riskLocked())core=renderSafetyStop("先取得专业运动许可");else if(plan===plans.recovery)core=renderRecovery();else if(!todaysReadiness())core=renderReadiness(plan);else if(todaysReadiness()?.symptom)core=renderSafetyStop("今天先停止训练并确认异常");else core=renderPreview(plan);return core+(done||nutritionSummary().count?nutritionMini():"")}
 function render(){clearInterval(restTicker);restTicker=null;const content=view==="today"?renderToday():view==="nutrition"?renderNutrition():view==="progress"?renderProgress():renderProfile();app.innerHTML=`<main class="v5-shell">${content}</main>${nav()}`;bind();startRestTicker();scheduleForegroundReminder()}
 
 function setReadiness(level,symptom=false){readiness.unshift({date:today(),at:new Date().toISOString(),level,symptom});readiness=readiness.filter((x,i,a)=>a.findIndex(y=>y.date===x.date)===i).slice(0,90);save(K.readiness,readiness);render()}
-function startWorkout(short=false){const plan=planForDate(),mode=todayMode(),targetSets=short||mode.factor<1?1:2,w={id:`w-${Date.now()}`,date:today(),startedAt:new Date().toISOString(),status:"active",planId:Object.keys(plans).find(k=>plans[k]===plan),title:plan.title,readiness:todaysReadiness()?.level||"normal",currentExercise:0,sets:[],exercises:(short?plan.exercises.slice(0,2):plan.exercises).map(e=>({...e,targetSets})),draftWeight:null,draftReps:null,restUntil:0};workouts.unshift(w);persist();render();toast(short?"已切换20分钟保底版":"管家会记住上次，带完这次")}
+function startWorkout(short=false){const plan=planForDate(),mode=todayMode(),reduced=short||mode.factor<1,w={id:`w-${Date.now()}`,date:today(),startedAt:new Date().toISOString(),status:"active",planId:Object.keys(plans).find(k=>plans[k]===plan),title:plan.title,readiness:todaysReadiness()?.level||"normal",currentExercise:0,sets:[],exercises:(short?plan.exercises.slice(0,3):plan.exercises).map(e=>({...e,targetSets:reduced?1:(e.sets||2)})),draftWeight:null,draftReps:null,restUntil:0};workouts.unshift(w);persist();render();toast(short?"已切换20分钟保底版":"已载入70分钟计划；管家会记住上次")}
 function persist(){save(K.workouts,workouts.slice(0,180))}
 function adjustDraft(field,delta){const w=activeWorkout(),e=currentExercise(w),target=suggest(e.id,w.id);if(field==="weight")w.draftWeight=Math.max(0,roundLoad((w.draftWeight??target.weight??0)+delta));else w.draftReps=Math.max(1,Math.min(30,(w.draftReps??target.reps)+delta));persist();render()}
 function queuePhaseReview(){const state=phaseState();if(state.report&&state.pending.length===0&&!phaseAI[state.report.key]?.result)setTimeout(()=>requestPhaseAI(false),700)}
@@ -215,7 +230,7 @@ function nextReminderAt(time="18:30"){
 function scheduleForegroundReminder(){
   clearTimeout(reminderTicker);reminderTicker=null;if(!services.reminder?.enabled||typeof Notification==="undefined"||Notification.permission!=="granted")return;
   const due=nextReminderAt(services.reminder.time),delay=due?due-Date.now():0;if(!due||delay>2147483647)return;
-  reminderTicker=setTimeout(async()=>{const reg=await navigator.serviceWorker.ready,plan=planForDate(due);await reg.showNotification("奢华健身管家",{body:`今天只做一件事：${plan.title}。我已把上次重量和本次剂量准备好。`,icon:"./app-icon-512.png",badge:"./app-icon-512.png",tag:`steward-${day(due)}`,data:{url:"./"}});scheduleForegroundReminder()},delay);
+  reminderTicker=setTimeout(async()=>{const reg=await navigator.serviceWorker.ready,plan=planForDate(due);await reg.showNotification("健身大脑",{body:`拥有自律，生活治愈。今天：${plan.title}，上次重量和本次剂量已准备好。`,icon:"./app-icon-512.png",badge:"./app-icon-512.png",tag:`steward-${day(due)}`,data:{url:"./"}});scheduleForegroundReminder()},delay);
 }
 async function setReminder(time){
   if(typeof Notification==="undefined")return toast("当前浏览器不支持系统提醒");
