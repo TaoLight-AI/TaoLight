@@ -33,3 +33,22 @@
 .v5-nutrition-mini{padding:18px 20px}.v5-nutrition-mini:before{display:none}.v5-nutrition-mini>button{display:grid;grid-template-columns:1fr auto;align-items:center;width:100%;padding:0;border:0;background:transparent;color:var(--v5-ink);text-align:left}.v5-nutrition-mini>button>div{display:grid;gap:3px}.v5-nutrition-mini small,.v5-nutrition-mini span{color:var(--v5-muted);font-size:13px}.v5-nutrition-mini b{font-size:21px}.v5-nutrition-mini i{display:grid;width:54px;height:54px;place-items:center;border-radius:16px;background:#e3f1ea;color:var(--v5-jade);font-size:14px;font-style:normal;font-weight:900}.v5-nutrition-mini p{margin:12px 0 0;padding-top:11px;border-top:1px solid #dce8e2;font-size:14px}
 @media(max-width:430px){.v5-nutrition-gauge{grid-template-columns:106px 1fr;gap:13px}.v5-nutrition-gauge>div{width:100px;height:100px}.v5-nutrition-gauge>div b{font-size:29px}.v5-meal-tabs{gap:4px}.v5-meal-tabs button{min-height:72px}.v5-meal-tabs b{font-size:14px}.v5-meal-actions{grid-template-columns:1fr}.v5-meal-numbers{grid-template-columns:1fr 1fr}}
 @media(max-width:350px){.v5-nutrition-gauge{grid-template-columns:1fr}.v5-nutrition-gauge>div{margin:auto}.v5-meal-tabs{grid-template-columns:1fr 1fr}.v5-meal-numbers{grid-template-columns:1fr}}
+@media(max-width:620px){
+  body.steward-v5{overflow-x:hidden;background:#f4f8f5}
+  #stewardV5{width:100%;overflow-x:hidden}
+  .v5-shell{width:100%;max-width:none;gap:9px;margin:0;padding:0 0 calc(84px + env(safe-area-inset-bottom))}
+  .v5-header{box-sizing:border-box;width:100%;padding:14px 16px 9px;background:linear-gradient(180deg,#edf8f2 0,#f4f8f5 100%)}
+  .v5-header h1{font-size:clamp(21px,6vw,27px)}
+  .v5-card{width:100%;margin:0;border-right:0;border-left:0;border-radius:0;box-shadow:0 1px 0 rgba(31,79,69,.08),inset 0 0 0 1px #fff}
+  .v5-card:before{left:16px}
+  .v5-peek{box-sizing:border-box;width:100%;padding:8px 16px}
+  .v5-nav{left:0;bottom:0;box-sizing:border-box;width:100%;max-width:none;padding:6px 8px calc(6px + env(safe-area-inset-bottom));border-right:0;border-bottom:0;border-left:0;border-radius:18px 18px 0 0;transform:none}
+  .v5-nav button{min-height:55px}
+  .v5-modal{padding:0}
+  .v5-sheet{width:100%;max-height:94dvh;border-right:0;border-bottom:0;border-left:0;border-radius:25px 25px 0 0;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+  .v5-toast{bottom:calc(78px + env(safe-area-inset-bottom))}
+  .v5-nutrition{padding-top:20px}
+  .v5-meal-capture{padding:17px 15px}
+  .v5-photo-button{min-height:78px}
+  .v5-meal-actions button{min-height:56px}
+}

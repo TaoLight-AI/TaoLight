@@ -42,6 +42,9 @@ for(const marker of ["拍餐","analyze-meal","确认计入全天","nutritionDeci
 for(const marker of ["v5-nutrition-gauge","v5-photo-button","v5-meal-result","repeat(4,1fr)"]){
   assert.ok(nutritionCss.includes(marker),`缺少拍餐视觉：${marker}`);
 }
+for(const marker of ["@media(max-width:620px)","width:100%;max-width:none","env(safe-area-inset-bottom)","border-radius:18px 18px 0 0"]){
+  assert.ok(nutritionCss.includes(marker),`缺少手机全宽适配：${marker}`);
+}
 assert.ok(fs.existsSync(new URL("../fitness-log/supabase/functions/analyze-meal/index.ts",import.meta.url)),"缺少餐食识别服务");
 for(const marker of ["periodicsync","notificationclick","SET_REMINDER"])assert.ok(sw.includes(marker),`缺少提醒能力：${marker}`);
 assert.equal(manifest.display,"standalone");
