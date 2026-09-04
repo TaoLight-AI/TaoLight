@@ -5,6 +5,7 @@ import vm from "node:vm";
 const source=fs.readFileSync(new URL("../docs/fitness-log/steward-v5.js",import.meta.url),"utf8");
 const css=fs.readFileSync(new URL("../docs/fitness-log/steward-v5.css",import.meta.url),"utf8");
 const nutritionCss=fs.readFileSync(new URL("../docs/fitness-log/nutrition-v7.css",import.meta.url),"utf8");
+const indexHtml=fs.readFileSync(new URL("../docs/fitness-log/index.html",import.meta.url),"utf8");
 const sw=fs.readFileSync(new URL("../docs/fitness-log/sw.js",import.meta.url),"utf8");
 const manifest=JSON.parse(fs.readFileSync(new URL("../docs/fitness-log/manifest.webmanifest",import.meta.url),"utf8"));
 
@@ -61,6 +62,8 @@ for(const marker of [".steward-v5 .shell,.steward-v5 #logForm,.steward-v5 #formV
 assert.ok(fs.existsSync(new URL("../fitness-log/supabase/functions/analyze-meal/index.ts",import.meta.url)),"缺少餐食识别服务");
 for(const marker of ["periodicsync","notificationclick","SET_REMINDER"])assert.ok(sw.includes(marker),`缺少提醒能力：${marker}`);
 assert.equal(manifest.display,"standalone");
+assert.ok(!indexHtml.includes('body:not(.steward-v5)::before'),"不应再显示品牌启动页");
+assert.ok(!indexHtml.includes("v5BootOut"),"不应保留4秒启动画面计时");
 assert.ok(fs.existsSync(new URL("../fitness-log/supabase/functions/huawei-health/index.ts",import.meta.url)));
 assert.ok(fs.existsSync(new URL("../fitness-log/supabase/functions/expert-service/index.ts",import.meta.url)));
 
