@@ -31,6 +31,7 @@ new MutationObserver(()=>{q("#feedbackModal")?.remove();q("#svProfileModal")?.re
 const app=document.createElement("section");
 app.id="stewardV5";
 q("#formView").prepend(app);
+[...q("#formView").children].forEach(node=>{if(node!==app)node.remove()});
 
 const plans={
   upperA:{title:"上肢 A · 胸背基础",short:"上肢A",minutes:70,exercises:[

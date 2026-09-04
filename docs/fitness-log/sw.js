@@ -1,5 +1,5 @@
-const CACHE="private-ai-coach-20260904-5";
-const ASSETS=["./","./index.html","./style.css?v=20260823-3","./steward-v5.css?v=20260904-2","./nutrition-v7.css?v=20260903-4","./steward-v5.js?v=20260904-4","./app-icon-512.png","./manifest.webmanifest"];
+const CACHE="private-ai-coach-20260904-6";
+const ASSETS=["./","./index.html","./style.css?v=20260823-3","./steward-v5.css?v=20260904-2","./nutrition-v7.css?v=20260903-4","./steward-v5.js?v=20260904-5","./app-icon-512.png","./manifest.webmanifest"];
 let reminder={enabled:false,time:"18:30",days:[1,2,4,5]},lastNotice="";
 const STATE_URL=new URL("./__steward_reminder_state__",self.registration.scope).href;
 
