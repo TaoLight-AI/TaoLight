@@ -5,6 +5,8 @@ const q=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
 const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
 const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const SUPABASE_URL="https://cjayajcjmpjjczwueyur.supabase.co";
+const SUPABASE_KEY="sb_publishable_gID5KWmnvlNS3acHBkyETg_W6ACSKdB";
 const account=((localStorage.getItem("fitness-key")||"").slice(0,10)||"guest");
 const K={profile:`steward-profile-${account}`,workouts:`steward-v5-workouts-${account}`,readiness:`steward-v5-readiness-${account}`,phaseAI:`steward-v5-phase-ai-${account}`,services:`steward-v5-services-${account}`,meals:`steward-v5-meals-${account}`};
 let profile=load(K.profile,{}),workouts=load(K.workouts,[]),readiness=load(K.readiness,[]),phaseAI=load(K.phaseAI,{}),services=load(K.services,{}),mealDays=load(K.meals,{}),legacyWorkouts=[],view="today",activeMeal="",restTicker=null,reminderTicker=null,remoteBusy=false;
