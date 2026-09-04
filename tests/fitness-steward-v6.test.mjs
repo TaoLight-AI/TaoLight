@@ -46,6 +46,12 @@ for(const marker of ["v5-nutrition-gauge","v5-photo-button","v5-meal-result","re
   assert.ok(nutritionCss.includes(marker),`缺少拍餐视觉：${marker}`);
 }
 assert.ok(nutritionCss.includes("v5-meal-result-actions"),"缺少纠错重算操作区的手机适配");
+for(const marker of ["v5-onboarding-sheet","v5-onboarding-submit"]){
+  assert.ok(source.includes(marker),`缺少可滚动建档结构：${marker}`);
+}
+for(const marker of ["height:100dvh","overflow-y:auto","-webkit-overflow-scrolling:touch","position:sticky","@media(max-height:700px)"]){
+  assert.ok(css.includes(marker),`缺少弱内核手机建档防卡死规则：${marker}`);
+}
 for(const marker of ["@media(max-width:620px)","width:100%;max-width:none","env(safe-area-inset-bottom)","border-radius:18px 18px 0 0"]){
   assert.ok(nutritionCss.includes(marker),`缺少手机全宽适配：${marker}`);
 }
