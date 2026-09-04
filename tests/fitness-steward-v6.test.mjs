@@ -32,10 +32,10 @@ assert.equal(analyze(tired).decision.code,"reduce","高疲劳阶段没有自动�
 const unsafe=Array.from({length:6},(_,i)=>make(i+1,{pain:i===4,status:i===4?"stopped":"done"}));
 assert.equal(analyze(unsafe).decision.code,"review","安全信号没有冻结自动进阶");
 
-for(const marker of ["管家综合反馈","下一阶段唯一决定","mapLegacyRows","离线主动提醒","huawei-health","真人专家与响应SLA"]){
+for(const marker of ["身体进步驾驶舱","当前唯一任务","progressGauge","v5-dashboard-grid","mapLegacyRows","离线主动提醒","huawei-health","真人专家与响应SLA"]){
   assert.ok(source.includes(marker),`缺少V6闭环：${marker}`);
 }
-for(const marker of ["v5-stage-ring","v5-six-dots","v5-service-list"])assert.ok(css.includes(marker),`缺少V6视觉：${marker}`);
+for(const marker of ["v5-dashboard-gauge","v5-dashboard-decision","v5-six-dots","v5-service-list"])assert.ok(css.includes(marker),`缺少V6视觉：${marker}`);
 for(const marker of ["拍餐","analyze-meal","确认计入全天","nutritionDecision","nutritionHistoryCard","photoStored:false"]){
   assert.ok(source.includes(marker),`缺少拍餐闭环：${marker}`);
 }
