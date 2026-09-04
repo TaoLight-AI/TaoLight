@@ -5,7 +5,7 @@ const q=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
 const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
 const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
-const account=((typeof key!=="undefined"?key:"").slice(0,10)||"guest");
+const account=((localStorage.getItem("fitness-key")||"").slice(0,10)||"guest");
 const K={profile:`steward-profile-${account}`,workouts:`steward-v5-workouts-${account}`,readiness:`steward-v5-readiness-${account}`,phaseAI:`steward-v5-phase-ai-${account}`,services:`steward-v5-services-${account}`,meals:`steward-v5-meals-${account}`};
 let profile=load(K.profile,{}),workouts=load(K.workouts,[]),readiness=load(K.readiness,[]),phaseAI=load(K.phaseAI,{}),services=load(K.services,{}),mealDays=load(K.meals,{}),legacyWorkouts=[],view="today",activeMeal="",restTicker=null,reminderTicker=null,remoteBusy=false;
 const day=(date=new Date())=>date.toLocaleDateString("en-CA");
@@ -13,6 +13,7 @@ const today=()=>day();
 const mealTypes=[{id:"breakfast",label:"早餐",icon:"日"},{id:"lunch",label:"午餐",icon:"午"},{id:"dinner",label:"晚餐",icon:"夕"},{id:"snack",label:"加餐",icon:"果"}];
 
 if(!q("#formView"))return;
+q("#v5Instant")?.remove();
 q("#stewardV4")?.remove();
 q("#stewardV3")?.classList.add("hidden");
 q("#feedbackModal")?.remove();
@@ -275,7 +276,7 @@ function mapLegacyRows(rows=[]){
 function migrateLegacyMeals(){
   const date=today();if(Object.keys(mealsFor(date)).length)return;
   try{
-    const legacy=load(`fitness-meals-${(typeof key!=="undefined"?key:"").slice(0,12)||"guest"}-${date}`,{}),mapped={};
+    const legacyAccount=(localStorage.getItem("fitness-key")||"").slice(0,12)||"guest",legacy=load(`fitness-meals-${legacyAccount}-${date}`,{}),mapped={};
     Object.entries(legacy).forEach(([id,m])=>{if(m?.confirmed)mapped[id]={itemsText:m.items_text||mealItemsText(m),calories:Number(m.estimated_calories)||0,protein:Number(m.protein_g)||0,calorieMin:Number(m.calorie_min)||0,calorieMax:Number(m.calorie_max)||0,confidence:m.confidence||"low",confirmed:true,source:"legacy",photoStored:false}});
     if(Object.keys(mapped).length){mealDays[date]=mapped;saveMeals()}
   }catch{}
@@ -320,4 +321,5 @@ migrateLegacyMeals();render();
 if(!profile.goal)setTimeout(onboarding,250);
 registerStewardWorker().then(async reg=>{if(reg&&services.reminder?.enabled)(await navigator.serviceWorker.ready).active?.postMessage({type:"SET_REMINDER",settings:{enabled:true,time:services.reminder.time||"18:30",days:[1,2,4,5]}})});
 setTimeout(hydrateLegacyWorkouts,450);
+addEventListener("load",hydrateLegacyWorkouts,{once:true});
 })();

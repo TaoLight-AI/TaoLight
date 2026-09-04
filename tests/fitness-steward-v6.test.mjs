@@ -64,6 +64,9 @@ for(const marker of ["periodicsync","notificationclick","SET_REMINDER"])assert.o
 assert.equal(manifest.display,"standalone");
 assert.ok(!indexHtml.includes('body:not(.steward-v5)::before'),"不应再显示品牌启动页");
 assert.ok(!indexHtml.includes("v5BootOut"),"不应保留4秒启动画面计时");
+assert.ok(indexHtml.indexOf("steward-v5.js?v=20260904-3")<indexHtml.indexOf("script.js?v=20260828-8"),"新版主界面脚本必须在旧版脚本前启动");
+assert.ok(indexHtml.includes('id="v5Instant"'),"首个HTML片段应直接显示今日界面骨架，禁止白屏");
+assert.ok(source.includes('q("#v5Instant")?.remove()'),"正式界面启动后必须移除即时骨架");
 assert.ok(fs.existsSync(new URL("../fitness-log/supabase/functions/huawei-health/index.ts",import.meta.url)));
 assert.ok(fs.existsSync(new URL("../fitness-log/supabase/functions/expert-service/index.ts",import.meta.url)));
 
