@@ -30,4 +30,6 @@ const source=fs.readFileSync(new URL("../docs/fitness-log/steward-v5.js",import.
 for(const marker of ["记住上次","只有20分钟","器械被占","语音填重量次数","今天到这里","疼痛或异常","今日身体成绩单","离线主动提醒","管家综合反馈"]){
   assert.ok(source.includes(marker),`V5缺少关键闭环：${marker}`);
 }
+assert.ok(source.includes('x.status==="active"&&x.date===today()'),"不得把其他日期未完成训练带入今天");
+assert.ok(source.includes('qa("#stewardV5 button").forEach(b=>b.type="button")'),"所有主界面按钮必须阻止默认表单提交");
 console.log("V5模拟验收通过：7天计划、3种剂量调整、6类用户状态、8项刚需闭环。 ");

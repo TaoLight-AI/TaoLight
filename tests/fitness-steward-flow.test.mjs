@@ -55,4 +55,21 @@ for(const action of [
   if(action.pain)assert.equal(report.celebrate,false,"疼痛路径出现庆祝反馈");
 }
 
+// 完整力量训练推进：一个动作结束只能进入下一动作，最后一组才结束训练。
+const targets=[3,3,3,3,2,3,2];
+const session={currentExercise:0,sets:[],status:"active"};
+for(let exerciseIndex=0;exerciseIndex<targets.length;exerciseIndex++){
+  for(let set=1;set<=targets[exerciseIndex];set++){
+    session.sets.push({exerciseIndex,set});
+    if(set===targets[exerciseIndex]){
+      if(exerciseIndex===targets.length-1)session.status="done";
+      else session.currentExercise++;
+    }
+    if(exerciseIndex<targets.length-1)assert.equal(session.status,"active",`动作${exerciseIndex+1}后训练被提前结束`);
+  }
+  if(exerciseIndex<targets.length-1)assert.equal(session.currentExercise,exerciseIndex+1,`动作${exerciseIndex+1}未进入下一动作`);
+}
+assert.equal(session.sets.length,19,"上肢A完整训练组数错误");
+assert.equal(session.status,"done","最后一组后未生成训练结果");
+
 console.log(`模拟用户路径通过：${personas.length}类日常状态 + 4类目标页状态 + 3类当日成绩单，无死胡同。`);
