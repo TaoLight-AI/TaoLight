@@ -1,0 +1,15 @@
+const assert=require('node:assert/strict');
+const E=require('../docs/fitness-log/coach-engine.js');
+const session=(rir=3,extra={})=>({status:'done',sets:[0,1,2].map(()=>({exerciseId:'press',weight:40,reps:15,rir,quality:'right',...extra}))});
+assert.equal(E.prescribe({sessions:[session()],exerciseId:'press'}).code,'hold');
+assert.equal(E.prescribe({sessions:[session(),session()],exerciseId:'press'}).weight,42.5);
+assert.equal(E.prescribe({sessions:[session(),session()],exerciseId:'press',restricted:true}).code,'hold');
+assert.equal(E.prescribe({sessions:[session(null),session(null)],exerciseId:'press'}).code,'hold');
+assert.equal(E.prescribe({sessions:[session(0)],exerciseId:'press'}).code,'reduce');
+assert.equal(E.prescribe({sessions:[],exerciseId:'press',startWeight:0}).weight,0);
+assert.equal(E.validDate('2026-02-30'),false);
+const row={id:'a',logDate:'2026-09-01',sets:[{weight:0,reps:10}]};
+const result=E.validatePackage({format:'taolight-coach-data',schema_version:2,records:[row,row,{...row,id:'b',logDate:'2026-09-09'}]},'2026-09-07');
+assert.equal(result.records.length,1);assert.equal(result.issues.length,2);
+assert.throws(()=>E.validatePackage({records:[]},'2026-09-07'));
+console.log('PASS: progress gating, restrictions, missing RIR, zero load, duplicate and date validation');
