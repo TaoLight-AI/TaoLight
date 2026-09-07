@@ -1,0 +1,18 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const source=fs.readFileSync('docs/fitness-log/steward-v5.js','utf8');
+const extract=(name,next)=>source.slice(source.indexOf('function '+name+'('),source.indexOf('function '+next+'('));
+let w={status:'active',currentExercise:0,sets:[],exercises:Array.from({length:7},(_,i)=>({id:'e'+i,name:'Exercise '+i,targetSets:i<5?3:2})),draftWeight:null,draftReps:null};
+let values={'#v5Weight':{value:'0'},'#v5Reps':{value:'10'},'#coachRir':{value:'3'}};
+const context={activeWorkout:()=>w.status==='active'?w:null,currentExercise:w=>w.exercises[w.currentExercise],q:k=>values[k],persist:()=>{},render:()=>{},toast:()=>{},queuePhaseReview:()=>{}};
+vm.createContext(context);vm.runInContext(extract('recordSet','swapExercise')+'\n'+extract('undoSet','coachDataCard'),context);
+for(let i=0;i<3;i++)context.recordSet('right');
+assert.equal(w.currentExercise,1);assert.equal(w.status,'active');assert.equal(w.sets[0].weight,0);assert.equal(w.sets[0].rir,3);
+context.undoSet();assert.equal(w.currentExercise,0);assert.equal(w.sets.length,2);
+context.recordSet('right');
+for(let i=0;i<16;i++)context.recordSet('right');
+assert.equal(w.status,'done');assert.equal(w.sets.length,19);
+context.recordSet('right');assert.equal(w.sets.length,19);
+w={status:'active',currentExercise:0,sets:[],exercises:[{id:'x',name:'x',targetSets:3}]};
+values['#v5Weight'].value='-1';context.recordSet('right');assert.equal(w.sets.length,0);
+values['#v5Weight'].value='10';context.recordSet('hard',true);assert.equal(w.status,'stopped');
+console.log('PASS: 7 exercises / 19 sets, zero-load, undo boundary, duplicate finish, invalid weight, pain stop');
